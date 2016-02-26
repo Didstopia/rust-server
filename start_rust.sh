@@ -1,0 +1,4 @@
+#!/bin/bash
+STEAM_PATH=/steamcmd
+RUST_PATH=$STEAM_PATH/rust
+./RustDedicated $RUST_SERVER_STARTUP_ARGUMENTS

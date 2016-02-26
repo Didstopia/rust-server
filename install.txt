@@ -1,0 +1,5 @@
+@sSteamCmdForcePlatformType linux
+login anonymous
+force_install_dir /steamcmd/rust
+app_update 258550 validate
+quit
