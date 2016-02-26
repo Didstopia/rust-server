@@ -65,6 +65,10 @@ EXPOSE 28016
 
 # Setup default environment variables for the server
 ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /rust_data/rust.log"
+ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
+ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
+ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"
+ENV RUST_SERVER_BANNER_URL ""
 
 # Start supervisord
 CMD supervisord -n -c /etc/supervisor/supervisord.conf
