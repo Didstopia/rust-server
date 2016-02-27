@@ -20,34 +20,18 @@ RUN apt-get install --no-install-recommends -y \
     lib32z1 \
     lib32z1-dev \
     curl \
-    wget
+    wget \
+    telnet
 
 # Run as root
 USER root
-
-# Install supervisor
-RUN apt-get install -y supervisor && \
-	mkdir -p /etc/supervisor/conf.d/ && \
-	mkdir -p /var/log/supervisor/
-
-# Copy supervisor configuration file
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-
-# Setup supervisor permissions
-RUN touch /var/log/supervisor/rust.out.log && touch /var/log/supervisor/rust.err.log
-RUN chown -R root:root /var/log/supervisor/rust.*.log
 
 # Install SteamCMD
 RUN mkdir -p /steamcmd/rust && \
 	curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
 
-# Setup Rust symlinks
-RUN mkdir -p /rust_data/backup && ln -s /rust_data/backup /steamcmd/rust/backup
-RUN mkdir -p /rust_data/config && ln -s /rust_data/config /steamcmd/rust/config
-RUN mkdir -p /rust_data/server && ln -s /rust_data/server /steamcmd/rust/server
-
-# Enable the Rust data volume
-VOLUME ["/rust_data"]
+# Create the server directory
+RUN mkdir -p /steamcmd/rust/server
 
 # Set the current working directory and the current user
 WORKDIR /steamcmd
@@ -64,11 +48,12 @@ EXPOSE 28015
 EXPOSE 28016
 
 # Setup default environment variables for the server
-ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /rust_data/rust.log"
+ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /dev/stdout"
 ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
 ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
 ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"
 ENV RUST_SERVER_BANNER_URL ""
 
-# Start supervisord
-CMD supervisord -n -c /etc/supervisor/supervisord.conf
+# Start the server
+WORKDIR /steamcmd/rust
+CMD bash start.sh
