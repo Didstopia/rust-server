@@ -43,6 +43,9 @@ RUN /steamcmd/steamcmd.sh +runscript /steamcmd/install.txt
 # Copy Rust startup script
 ADD start_rust.sh /steamcmd/rust/start.sh
 
+# Set the server folder up as a volume
+VOLUME ["/steamcmd/rust/server"]
+
 # Expose necessary ports
 EXPOSE 28015
 EXPOSE 28016
