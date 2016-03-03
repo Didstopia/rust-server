@@ -1,5 +1,7 @@
 ## Rust server that runs inside a Docker container
 
+Updated to match devblog [#99.1](https://playrust.com/devblog-99-1/)
+
 # How to run the server
 1. Set the ```RUST_SERVER_STARTUP_ARGUMENTS``` environment variable to match your preferred server arguments (defaults are set to ```"-batchmode -load -logfile /dev/stdout"```, note how we're logging to stdout)
 2. Optionally mount ```/steamcmd/rust/server``` (or any other Rust servers you might need) somewhere on the host or inside another container to keep your data safe
