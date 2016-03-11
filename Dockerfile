@@ -1,5 +1,7 @@
 FROM ubuntu:14.04
 
+MAINTAINER didstopia
+
 # Add support for 32-bit architecture
 RUN dpkg --add-architecture i386
 
@@ -11,20 +13,23 @@ RUN apt-get install --no-install-recommends -y \
     ca-certificates \
     software-properties-common \
     python-software-properties \
-    screen \
-    libc6-amd64 \
-    Xvfb \
-    lib32gcc1 \
-    net-tools \
     lib32stdc++6 \
-    lib32z1 \
-    lib32z1-dev \
+    lib32gcc1 \
     curl \
     wget \
-    telnet
+    rsync
 
 # Run as root
 USER root
+
+# Setup the default timezone
+ENV TZ=Europe/Helsinki
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Add crontab file in the cron directory
+ADD crontab /etc/cron.d/rust-rsync
+RUN chmod 0644 /etc/cron.d/rust-rsync
+RUN touch /var/log/cron.log
 
 # Install SteamCMD
 RUN mkdir -p /steamcmd/rust && \
@@ -44,7 +49,8 @@ RUN /steamcmd/steamcmd.sh +runscript /steamcmd/install.txt
 ADD start_rust.sh /steamcmd/rust/start.sh
 
 # Set the server folder up as a volume
-VOLUME ["/steamcmd/rust/server"]
+RUN mkdir -p /data
+VOLUME ["/data"]
 
 # Expose necessary ports
 EXPOSE 28015

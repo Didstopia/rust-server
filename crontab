@@ -1,0 +1,2 @@
+* * * * * root rsync -rtuv /data/ /steamcmd/rust/server >> /var/log/cron.log 2>&1
+* * * * * root rsync -rtuv /steamcmd/rust/server/ /data >> /var/log/cron.log 2>&1
