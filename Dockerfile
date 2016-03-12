@@ -2,18 +2,14 @@ FROM ubuntu:14.04
 
 MAINTAINER didstopia
 
-# Add support for 32-bit architecture
-RUN dpkg --add-architecture i386
-
 # Run a quick apt-get update/upgrade
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y
 
 # Install dependencies, mainly for SteamCMD
-RUN apt-get install --no-install-recommends -y \
+RUN apt-get install -y \
     ca-certificates \
     software-properties-common \
     python-software-properties \
-    lib32stdc++6 \
     lib32gcc1 \
     curl \
     wget \

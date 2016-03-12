@@ -1,5 +1,7 @@
 ## Rust server that runs inside a Docker container
 
+NOTE: Updated to (hopefully) fix a saving issue with Rust/Unity!
+
 Updated to [Devblog 101](https://playrust.com/devblog-101/)
 
 # How to run the server
