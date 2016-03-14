@@ -1,13 +1,22 @@
 #!/bin/bash
-STEAM_PATH=/steamcmd
-RUST_PATH=$STEAM_PATH/rust
 
-# Start the cron service in the background
-cron -f &
-#/usr/bin/crontab /etc/cron.d/rust-rsync
+# Create the necessary folder structure
+if [ ! -d "/steamcmd/rust" ]; then
+	echo "Creating folder structure.."
+	mkdir -p /steamcmd/rust
+fi
 
-# When starting the server, we rsync both ways
-rsync -rtuv /data/ /steamcmd/rust/server
-rsync -rtuv /steamcmd/rust/server/ /data
+# Install/update steamcmd
+echo "Installing/updating steamcmd.."
+curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
 
+# Install/update Rust from install.txt
+echo "Installing/updating Rust.."
+bash /steamcmd/steamcmd.sh +runscript /install.txt
+
+# Setup paths and run the server
+echo "Starting Rust.."
+#STEAM_PATH=/steamcmd
+#RUST_PATH=$STEAM_PATH/rust
+cd /steamcmd/rust
 ./RustDedicated $RUST_SERVER_STARTUP_ARGUMENTS +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION"
