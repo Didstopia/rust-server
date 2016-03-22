@@ -36,7 +36,7 @@ EXPOSE 28015
 EXPOSE 28016
 
 # Setup default environment variables for the server
-ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /dev/stdout +server.identity docker +server.seed 12345"
+ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /dev/stdout +server.identity docker +server.seed 12345 +server.secure 1"
 ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
 ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
 ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"

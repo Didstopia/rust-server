@@ -16,7 +16,5 @@ bash /steamcmd/steamcmd.sh +runscript /install.txt
 
 # Setup paths and run the server
 echo "Starting Rust.."
-#STEAM_PATH=/steamcmd
-#RUST_PATH=$STEAM_PATH/rust
 cd /steamcmd/rust
 ./RustDedicated $RUST_SERVER_STARTUP_ARGUMENTS +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION"
