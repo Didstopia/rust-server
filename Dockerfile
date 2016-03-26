@@ -26,7 +26,7 @@ ADD block.sh /block.sh
 
 # Create and set the steamcmd folder as a volume
 RUN mkdir -p /steamcmd/rust
-VOLUME ["/steamcmd"]
+VOLUME ["/steamcmd/rust"]
 
 # Add the steamcmd installation script
 ADD install.txt /install.txt
