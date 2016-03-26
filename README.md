@@ -1,8 +1,7 @@
 ## Rust server that runs inside a Docker container
 
-NOTE: This image has been updated so that it installs/updates Rust on startup!
+NOTE: This image will always install/update to the latest steamcmd and Rust server, all you have to do to update your server is to redeploy the container.
 
-Since this image will always install/update to the latest steamcmd and Rust server, all you have to do to update your server is to redeploy the container.
 Also note that the entire /steamcmd should be mounted on the host system to avoid potential saving issues with Rust.
 
 # How to run the server
@@ -18,3 +17,9 @@ RUST_SERVER_DESCRIPTION
 RUST_SERVER_URL
 RUST_SERVER_BANNER_URL
 ```
+
+You can also set the following variables to **"true"** if you want to block a specific service:
+```
+RUST_SERVER_BLOCK_RUSTIO
+```
+*Please note that the blocking feature has not been thoroughly tested yet and is constantly being worked on.*

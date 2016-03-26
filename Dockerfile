@@ -21,6 +21,9 @@ USER root
 ENV TZ=Europe/Helsinki
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# Copy the block script
+ADD block.sh /block.sh
+
 # Create and set the steamcmd folder as a volume
 RUN mkdir -p /steamcmd/rust
 VOLUME ["/steamcmd"]
