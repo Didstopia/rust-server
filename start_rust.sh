@@ -1,4 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+pid=0
+
+trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
+exit_handler()
+{
+	echo "Shut down signal received"
+	python /shutdown.py
+	sleep 2
+	kill $pid
+	exit
+}
 
 # Create the necessary folder structure
 if [ ! -d "/steamcmd/rust" ]; then
@@ -17,7 +29,21 @@ curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -
 echo "Installing/updating Rust.."
 bash /steamcmd/steamcmd.sh +runscript /install.txt
 
-# Setup paths and run the server
-echo "Starting Rust.."
+# Add RCON support if necessary
+RUST_STARTUP_COMMAND=$RUST_SERVER_STARTUP_ARGUMENTS
+if [ ! -z ${RUST_RCON_PORT+x} ]; then
+	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.port $RUST_RCON_PORT"
+fi
+if [ ! -z ${RUST_RCON_PASSWORD+x} ]; then
+	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.password $RUST_RCON_PASSWORD"
+fi
+
+# Set the working directory
 cd /steamcmd/rust
-./RustDedicated $RUST_SERVER_STARTUP_ARGUMENTS +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION"
+
+# Run the server
+echo "Starting Rust.."
+/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
+pid="$!"
+
+wait

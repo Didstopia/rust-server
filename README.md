@@ -16,10 +16,16 @@ RUST_SERVER_NAME
 RUST_SERVER_DESCRIPTION
 RUST_SERVER_URL
 RUST_SERVER_BANNER_URL
+RUST_RCON_PORT
+RUST_RCON_PASSWORD
 ```
+
+IMPORTANT: You should set both the ```RUST_RCON_PORT``` and RUST_RCON_PASSWORD``` to enable RCON, which will also enable proper server shutdown when Docker sends the shutdown/kill command. It essentially connects to the RCON server and executed the ```quit``` command, which properly shuts down the server.
+
+
 
 You can also set the following variables to **"true"** if you want to block a specific service:
 ```
 RUST_SERVER_BLOCK_RUSTIO
 ```
-*Please note that the blocking feature has not been thoroughly tested yet and is constantly being worked on.*
+*Please note that the blocking feature has not been thoroughly tested yet (ie. probably doesn't even work yet) and is constantly being worked on.*

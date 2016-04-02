@@ -34,6 +34,11 @@ ADD install.txt /install.txt
 # Copy the Rust startup script
 ADD start_rust.sh /start.sh
 
+# Setup RCON support
+RUN apt-get install -y python-pip
+RUN pip install python-valve
+ADD shutdown.py /shutdown.py
+
 # Expose necessary ports
 EXPOSE 28015
 EXPOSE 28016
@@ -44,6 +49,8 @@ ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
 ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
 ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"
 ENV RUST_SERVER_BANNER_URL ""
+ENV RUST_RCON_PORT "28016"
+ENV RUST_RCON_PASSWORD ""
 
 # Start the server
-CMD bash /start.sh
+ENTRYPOINT ["./start.sh"]
