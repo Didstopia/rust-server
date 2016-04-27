@@ -8,6 +8,8 @@ from valve.source.rcon import RCON
 SERVER_ADDRESS = ("localhost", int(os.environ.get('RUST_RCON_PORT')))
 PASSWORD = os.environ.get('RUST_RCON_PASSWORD')
 
+# TODO: Rewrite to use websocket based rcon instead
+
 try:
     with RCON(SERVER_ADDRESS, PASSWORD, 5) as rcon:
         rcon("quit")

@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER didstopia
 
@@ -11,8 +11,11 @@ RUN apt-get install -y \
     software-properties-common \
     python-software-properties \
     lib32gcc1 \
+    libstdc++6 \
     curl \
-    wget
+    wget \
+    bsdtar \
+    nginx
 
 # Run as root
 USER root
@@ -21,8 +24,19 @@ USER root
 ENV TZ=Europe/Helsinki
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Copy the block script
-ADD block.sh /block.sh
+# Remove default nginx stuff
+RUN rm -fr /usr/share/nginx/html/* && \
+	rm -fr /etc/nginx/sites-available/* && \
+	rm -fr /etc/nginx/sites-enabled/*
+
+# Install webrcon
+COPY nginx_rcon.conf /etc/nginx/nginx.conf
+RUN curl -sL https://github.com/Didstopia/webrcon/archive/gh-pages.zip | bsdtar -xvf- -C /tmp && \
+	mv /tmp/webrcon-gh-pages/* /usr/share/nginx/html/ && \
+	rm -fr /tmp/webrcon-gh-pages
+
+# Customize the webrcon package to fit our needs
+ADD fix_conn.sh /tmp/fix_conn.sh
 
 # Create and set the steamcmd folder as a volume
 RUN mkdir -p /steamcmd/rust
@@ -34,12 +48,14 @@ ADD install.txt /install.txt
 # Copy the Rust startup script
 ADD start_rust.sh /start.sh
 
+# TODO: Rewrite to use the webrcon
 # Setup RCON support
 RUN apt-get install -y python-pip
 RUN pip install python-valve
 ADD shutdown.py /shutdown.py
 
 # Expose necessary ports
+EXPOSE 8080
 EXPOSE 28015
 EXPOSE 28016
 
@@ -49,8 +65,10 @@ ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
 ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
 ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"
 ENV RUST_SERVER_BANNER_URL ""
+ENV RUST_RCON_WEB "1"
 ENV RUST_RCON_PORT "28016"
-ENV RUST_RCON_PASSWORD ""
+ENV RUST_RCON_PASSWORD "docker"
+ENV RUST_RESPAWN_ON_RESTART "0"
 
 # Start the server
 ENTRYPOINT ["./start.sh"]

@@ -18,9 +18,6 @@ if [ ! -d "/steamcmd/rust" ]; then
 	mkdir -p /steamcmd/rust
 fi
 
-# Check if we need to block a service
-bash /block.sh
-
 # Install/update steamcmd
 echo "Installing/updating steamcmd.."
 curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
@@ -36,6 +33,24 @@ if [ ! -z ${RUST_RCON_PORT+x} ]; then
 fi
 if [ ! -z ${RUST_RCON_PASSWORD+x} ]; then
 	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.password $RUST_RCON_PASSWORD"
+fi
+if [ ! -z ${RUST_RESPAWN_ON_RESTART+x} ]; then
+	if [ "$RUST_RESPAWN_ON_RESTART" = "1" ]; then
+		RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +spawn.fill_groups"
+	fi
+fi
+
+if [ ! -z ${RUST_RCON_WEB+x} ]; then
+	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.web $RUST_RCON_WEB"
+	if [ "$RUST_RCON_WEB" = "1" ]; then
+		# Fix the webrcon (customize a few elements)
+		bash /tmp/fix_conn.sh
+
+		# Start nginx (in the background)
+		echo "Starting web server.."
+		nginx && sleep 5
+		#nginx -g "daemon off;" && sleep 5
+	fi
 fi
 
 # Set the working directory

@@ -1,31 +1,26 @@
-## Rust server that runs inside a Docker container
+# Rust server that runs inside a Docker container
 
-NOTE: This image will always install/update to the latest steamcmd and Rust server, all you have to do to update your server is to redeploy the container.
+**WIP NOTE**: We're still testing the switch from the old RCON system to the new one, so until we can make sure that it's properly working, we'll keep this note here to remind you that it's still a work in progress.
 
-Also note that the entire /steamcmd/rust can be mounted on the host system.
+**NOTE**: This image will install/update on startup. The path ```/steamcmd/rust``` can be mounted on the host for data persistence.  
+Also note that this image provides the new web-based RCON, so you should set ```RUST_RCON_PASSWORD``` to a more secure password.
 
 # How to run the server
-1. Set the ```RUST_SERVER_STARTUP_ARGUMENTS``` environment variable to match your preferred server arguments (defaults are set to ```"-batchmode -load -logfile /dev/stdout +server.identity docker +server.seed 12345 +server.secure 1"```, note how we're logging to stdout)
+1. Set the environment variables you wish to modify from below (note the RCON password!)
 2. Optionally mount ```/steamcmd/rust``` somewhere on the host or inside another container to keep your data safe
-3. Run the container and enjoy!
+3. Enjoy!
 
-The following environment variables are available and should be used individually instead of specifying them in the arguments variable:
+The following environment variables are available:
 ```
-RUST_SERVER_STARTUP_ARGUMENTS
-RUST_SERVER_NAME
-RUST_SERVER_DESCRIPTION
-RUST_SERVER_URL
-RUST_SERVER_BANNER_URL
-RUST_RCON_PORT
-RUST_RCON_PASSWORD
+RUST_SERVER_STARTUP_ARGUMENTS (DEFAULT: "-batchmode -load -logfile /dev/stdout +server.identity docker +server.seed 12345 +server.secure 1")
+RUST_SERVER_NAME (DEFAULT: "Rust Server [DOCKER]" - The publicly visible server name)
+RUST_SERVER_DESCRIPTION (DEFAULT: "This is a Rust server running inside a Docker container!" - The publicly visible server description)
+RUST_SERVER_URL (DEFAULT: "https://hub.docker.com/r/didstopia/rust-server/" - The publicly visible server website)
+RUST_SERVER_BANNER_URL (DEFAULT: "" - The publicly visible server banner image URL)
+RUST_RCON_WEB (DEFAULT "1" - Set to 1 or 0 to enable or disable the web-based RCON server)
+RUST_RCON_PORT (DEFAULT: "28016" - RCON server port)
+RUST_RCON_PASSWORD (DEFAULT: "docker" - RCON server password, please change this!)
+RUST_RESPAWN_ON_RESTART (DEFAULT: "0" - Controls whether to respawn resources on startup)
 ```
 
-IMPORTANT: You should set both the ```RUST_RCON_PORT``` and RUST_RCON_PASSWORD``` to enable RCON, which will also enable proper server shutdown when Docker sends the shutdown/kill command. It essentially connects to the RCON server and executed the ```quit``` command, which properly shuts down the server.
-
-
-
-You can also set the following variables to **"true"** if you want to block a specific service:
-```
-RUST_SERVER_BLOCK_RUSTIO
-```
-*Please note that the blocking feature has not been thoroughly tested yet (ie. probably doesn't even work yet) and is constantly being worked on.*
+If you need help, have questions or bug submissions, feel free to contact me **@Dids** on Twitter, and on the *Rust Server Owners* Slack community.
