@@ -1,4 +1,5 @@
 rust_data/
+shutdown_app/node_modules/
 
 # Docker project generated files to ignore
 #  if you want to ignore files created by your editor/tools,

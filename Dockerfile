@@ -15,7 +15,8 @@ RUN apt-get install -y \
     curl \
     wget \
     bsdtar \
-    nginx
+    nginx \
+    build-essential
 
 # Run as root
 USER root
@@ -48,11 +49,13 @@ ADD install.txt /install.txt
 # Copy the Rust startup script
 ADD start_rust.sh /start.sh
 
-# TODO: Rewrite to use the webrcon
-# Setup RCON support
-RUN apt-get install -y python-pip
-RUN pip install python-valve
-ADD shutdown.py /shutdown.py
+# Setup proper shutdown support
+RUN curl -sL https://deb.nodesource.com/setup_5.x | bash -
+RUN apt-get install -y nodejs
+ADD shutdown_app/ /shutdown_app/
+WORKDIR /shutdown_app
+RUN npm install
+WORKDIR /
 
 # Expose necessary ports
 EXPOSE 8080

@@ -1,7 +1,5 @@
 # Rust server that runs inside a Docker container
 
-**WIP NOTE**: We're still testing the switch from the old RCON system to the new one, so until we can make sure that it's properly working, we'll keep this note here to remind you that it's still a work in progress.
-
 **NOTE**: This image will install/update on startup. The path ```/steamcmd/rust``` can be mounted on the host for data persistence.  
 Also note that this image provides the new web-based RCON, so you should set ```RUST_RCON_PASSWORD``` to a more secure password.
 

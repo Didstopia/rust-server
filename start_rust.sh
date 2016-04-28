@@ -5,9 +5,9 @@ pid=0
 trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 exit_handler()
 {
-	echo "Shut down signal received"
-	python /shutdown.py
-	sleep 2
+	echo "Shutdown signal received"
+	node /shutdown_app/app.js
+	sleep 1
 	kill $pid
 	exit
 }

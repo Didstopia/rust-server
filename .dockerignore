@@ -1,3 +1,4 @@
 node_modules
+shutdown_app/node_modules
 *.log
 rust_data

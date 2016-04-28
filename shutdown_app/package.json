@@ -1,0 +1,14 @@
+{
+  "name": "shutdown_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodejs app.js"
+  },
+  "author": "",
+  "private": "true",
+  "dependencies": {
+    "ws": "^1.1.0"
+  }
+}
