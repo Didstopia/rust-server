@@ -36,7 +36,7 @@ if [ ! -z ${RUST_RCON_PASSWORD+x} ]; then
 fi
 if [ ! -z ${RUST_RESPAWN_ON_RESTART+x} ]; then
 	if [ "$RUST_RESPAWN_ON_RESTART" = "1" ]; then
-		RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +spawn.fill_groups"
+		RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +spawn.fill_groups 1"
 	fi
 fi
 
