@@ -18,6 +18,10 @@ if [ ! -d "/steamcmd/rust" ]; then
 	mkdir -p /steamcmd/rust
 fi
 
+# Install/update steamcmd
+echo "Installing/updating steamcmd.."
+curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
+
 # Check if we are auto-updating or not
 if [ "$RUST_DISABLE_AUTO_UPDATE" = "1" ]; then
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
