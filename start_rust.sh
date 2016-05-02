@@ -18,13 +18,20 @@ if [ ! -d "/steamcmd/rust" ]; then
 	mkdir -p /steamcmd/rust
 fi
 
-# Install/update steamcmd
-echo "Installing/updating steamcmd.."
-curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
-
-# Install/update Rust from install.txt
-echo "Installing/updating Rust.."
-bash /steamcmd/steamcmd.sh +runscript /install.txt
+# Check if we are auto-updating or not
+if [ "$RUST_DISABLE_AUTO_UPDATE" = "1" ]; then
+	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
+		# Install/update Rust from install.txt
+		echo "Installing/updating Rust.."
+		bash /steamcmd/steamcmd.sh +runscript /install.txt
+	else
+		echo "Rust seems to be installed, skipping automatic update.."
+	fi
+else
+	# Install/update Rust from install.txt
+	echo "Installing/updating Rust.."
+	bash /steamcmd/steamcmd.sh +runscript /install.txt
+fi
 
 # Add RCON support if necessary
 RUST_STARTUP_COMMAND=$RUST_SERVER_STARTUP_ARGUMENTS
