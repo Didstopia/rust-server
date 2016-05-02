@@ -43,11 +43,6 @@ if [ -d "/oxide" ]; then
 	echo "Installing/updating Oxide.."
 	cp -fr /oxide/* /steamcmd/rust/
 fi
-if [ -d "/mods" ]; then
-	# Install/update mods
-	echo "Installing/updating mods.."
-	cp -fr /mods/* /steamcmd/rust/plugins/
-fi
 
 # Add RCON support if necessary
 RUST_STARTUP_COMMAND=$RUST_SERVER_STARTUP_ARGUMENTS
