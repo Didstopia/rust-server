@@ -33,6 +33,18 @@ else
 	bash /steamcmd/steamcmd.sh +runscript /install.txt
 fi
 
+# Check if this is actually a modded server
+if [ -d "/oxide" ]; then
+	# Install/update Oxide
+	echo "Installing/updating Oxide.."
+	cp -fr /oxide/* /steamcmd/rust/
+fi
+if [ -d "/mods" ]; then
+	# Install/update mods
+	echo "Installing/updating mods.."
+	cp -fr /mods/* /steamcmd/rust/plugins/
+fi
+
 # Add RCON support if necessary
 RUST_STARTUP_COMMAND=$RUST_SERVER_STARTUP_ARGUMENTS
 if [ ! -z ${RUST_RCON_PORT+x} ]; then
