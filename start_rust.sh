@@ -6,8 +6,17 @@ trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 exit_handler()
 {
 	echo "Shutdown signal received"
+
+	if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" ]; then
+		# Backup the current blueprint data
+		cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" "/steamcmd/rust/UserPersistence.db.bak"
+	fi
+	
+	# Execute the RCON shutdown command
 	node /shutdown_app/app.js
 	sleep 1
+
+	# Force kill and exit
 	kill $pid
 	exit
 }
@@ -71,12 +80,32 @@ if [ ! -z ${RUST_RCON_WEB+x} ]; then
 	fi
 fi
 
+# Check if a special seed override file exists
+if [ -f "/steamcmd/rust/seed_override" ]; then
+	RUST_SEED_OVERRIDE=`cat /steamcmd/rust/seed_override`
+	echo "Found seed override: $RUST_SEED_OVERRIDE"
+
+	# Modify the server identity to include the override seed
+	RUST_SERVER_IDENTITY=$RUST_SEED_OVERRIDE
+	RUST_SERVER_SEED=$RUST_SEED_OVERRIDE
+
+	# Prepare the identity directory (if it doesn't exist)
+	if [ ! -d "/steamcmd/rust/server/$RUST_SEED_OVERRIDE" ]; then
+		echo "Creating seed override identity directory.."
+		mkdir -p "/steamcmd/rust/server/$RUST_SEED_OVERRIDE"
+		if [ -f "/steamcmd/rust/UserPersistence.db.bak" ]; then
+			echo "Copying blueprint backup in place.."
+			cp -fr "/steamcmd/rust/UserPersistence.db.bak" "/steamcmd/rust/server/$RUST_SEED_OVERRIDE/UserPersistence.db"
+		fi
+	fi
+fi
+
 # Set the working directory
 cd /steamcmd/rust
 
 # Run the server
 echo "Starting Rust.."
-/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
+/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
 pid="$!"
 
 wait

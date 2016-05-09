@@ -10,7 +10,9 @@ Also note that this image provides the new web-based RCON, so you should set ```
 
 The following environment variables are available:
 ```
-RUST_SERVER_STARTUP_ARGUMENTS (DEFAULT: "-batchmode -load -logfile /dev/stdout +server.identity docker +server.seed 12345 +server.secure 1")
+RUST_SERVER_STARTUP_ARGUMENTS (DEFAULT: "-batchmode -load -logfile /dev/stdout +server.secure 1")
+RUST_SERVER_IDENTITY (DEFAULT: "docker" - Mainly used for the name of the save directory)
+RUST_SERVER_SEED (DEFAULT: "12345" - The server map seed, must be an integer)
 RUST_SERVER_NAME (DEFAULT: "Rust Server [DOCKER]" - The publicly visible server name)
 RUST_SERVER_DESCRIPTION (DEFAULT: "This is a Rust server running inside a Docker container!" - The publicly visible server description)
 RUST_SERVER_URL (DEFAULT: "https://hub.docker.com/r/didstopia/rust-server/" - The publicly visible server website)
