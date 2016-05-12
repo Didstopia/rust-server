@@ -1,3 +1,16 @@
+# ACHTUNG 
+This is just a copy fork for of https://github.com/Dids ´s great project for bringing Rust into a handy format.
+Thank you for creating this, Dids! I love it!
+
+So, all props go to Dids, I just do some modifications for testing purposes.
+
+-Galaxxius
+
+# ACHTUNG ENDE 
+
+Original readme.md:
+
+
 # Rust server that runs inside a Docker container
 
 **NOTE**: This image will install/update on startup. The path ```/steamcmd/rust``` can be mounted on the host for data persistence.  

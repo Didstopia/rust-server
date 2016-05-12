@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER didstopia
+MAINTAINER galaxxius
 
 # Run a quick apt-get update/upgrade
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge
@@ -22,7 +22,7 @@ RUN apt-get install -y \
 USER root
 
 # Setup the default timezone
-ENV TZ=Europe/Helsinki
+ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Remove default nginx stuff
@@ -64,15 +64,15 @@ EXPOSE 28016
 
 # Setup default environment variables for the server
 ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /dev/stdout +server.secure 1"
-ENV RUST_SERVER_IDENTITY "docker"
-ENV RUST_SERVER_SEED "12345"
-ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
+ENV RUST_SERVER_IDENTITY "dockerust"
+ENV RUST_SERVER_SEED "1337"
+ENV RUST_SERVER_NAME "dockerust"
 ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
 ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"
 ENV RUST_SERVER_BANNER_URL ""
 ENV RUST_RCON_WEB "1"
 ENV RUST_RCON_PORT "28016"
-ENV RUST_RCON_PASSWORD "docker"
+ENV RUST_RCON_PASSWORD "otherpw"
 ENV RUST_RESPAWN_ON_RESTART "0"
 ENV RUST_DISABLE_AUTO_UPDATE "0"
 
