@@ -24,6 +24,7 @@ RUST_RCON_PORT (DEFAULT: "28016" - RCON server port)
 RUST_RCON_PASSWORD (DEFAULT: "docker" - RCON server password, please change this!)
 RUST_RESPAWN_ON_RESTART (DEFAULT: "0" - Controls whether to respawn resources on startup)
 RUST_DISABLE_AUTO_UPDATE (DEFAULT: "0" - Disables automatic updating on startup)
+RUST_BRANCH (DEFAULT: Not set - Sets the branch to use, eg. set to "-beta prerelease" for the prerelease branch)
 ```
 
 If you need help, have questions or bug submissions, feel free to contact me **@Dids** on Twitter, and on the *Rust Server Owners* Slack community.

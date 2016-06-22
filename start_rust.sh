@@ -31,6 +31,12 @@ fi
 echo "Installing/updating steamcmd.."
 curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
 
+# Check which branch to use
+if [ ! -z ${RUST_BRANCH+x} ]; then
+	echo "Using branch arguments: $RUST_BRANCH"
+	sed -i "s/validate/$RUST_BRANCH validate/g" /install.txt
+fi
+
 # Check if we are auto-updating or not
 if [ "$RUST_DISABLE_AUTO_UPDATE" = "1" ]; then
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
