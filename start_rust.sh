@@ -34,7 +34,9 @@ curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -
 # Check which branch to use
 if [ ! -z ${RUST_BRANCH+x} ]; then
 	echo "Using branch arguments: $RUST_BRANCH"
-	sed -i "s/app_update 258550 validate/app_update 258550 $RUST_BRANCH validate/g" /install.txt
+	sed -i "s/app_update 258550.*validate/app_update 258550 $RUST_BRANCH validate/g" /install.txt
+else
+	sed -i "s/app_update 258550.*validate/app_update 258550 validate/g" /install.txt
 fi
 
 # Check if we are auto-updating or not
