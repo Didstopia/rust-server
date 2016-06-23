@@ -1,5 +1,7 @@
 sample.txt
 rust_data/
+scheduler_app/node_modules/
+restart_app/node_modules/
 shutdown_app/node_modules/
 
 # Docker project generated files to ignore

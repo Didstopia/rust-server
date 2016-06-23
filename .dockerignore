@@ -1,6 +1,8 @@
 sample.txt
 node_modules
+scheduler_app/node_modules
 shutdown_app/node_modules
+restart_app/node_modules
 *.log
 rust_data
 .DS_Store

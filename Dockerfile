@@ -49,12 +49,29 @@ ADD install.txt /install.txt
 # Copy the Rust startup script
 ADD start_rust.sh /start.sh
 
-# Setup proper shutdown support
+# Copy the Rust update check script
+ADD update_check.sh /update_check.sh
+
+# Install NodeJS (see below)
 RUN curl -sL https://deb.nodesource.com/setup_5.x | bash -
 RUN apt-get install -y nodejs
+
+# Setup proper shutdown support
 ADD shutdown_app/ /shutdown_app/
 WORKDIR /shutdown_app
 RUN npm install
+
+# Setup restart support (for update automation)
+ADD restart_app/ /restart_app/
+WORKDIR /restart_app
+RUN npm install
+
+# Setup scheduling support
+ADD scheduler_app/ /scheduler_app/
+WORKDIR /scheduler_app
+RUN npm install
+
+# Set the current working directory
 WORKDIR /
 
 # Expose necessary ports
@@ -75,6 +92,8 @@ ENV RUST_RCON_PORT "28016"
 ENV RUST_RCON_PASSWORD "docker"
 ENV RUST_RESPAWN_ON_RESTART "0"
 ENV RUST_DISABLE_AUTO_UPDATE "0"
+ENV RUST_UPDATE_CHECKING "0"
+ENV RUST_UPDATE_BRANCH "public"
 
 # Start the server
 ENTRYPOINT ["./start.sh"]

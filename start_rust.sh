@@ -52,6 +52,17 @@ else
 	# Install/update Rust from install.txt
 	echo "Installing/updating Rust.."
 	bash /steamcmd/steamcmd.sh +runscript /install.txt
+
+	# Run the update check if it's not been run before
+	if [ ! -f "/steamcmd/rust/build.id" ]; then
+		./update_check.sh
+	else
+		OLD_BUILDID="$(cat /steamcmd/rust/build.id)"
+		STRING_SIZE=${#OLD_BUILDID}
+		if [ "$STRING_SIZE" -lt "6" ]; then
+			./update_check.sh
+		fi
+	fi
 fi
 
 # Check if this is actually a modded server
@@ -107,6 +118,16 @@ if [ -f "/steamcmd/rust/seed_override" ]; then
 		fi
 	fi
 fi
+
+# Use an intermediary file to pass env vars to cron
+if [ -f "/root/.profile" ]; then
+	rm -fr /root/.profile
+fi
+env |sed 's/^\(.*\)$/export \1/g' >/root/.profile
+
+# Start cron
+echo "Starting scheduled task manager.."
+node /scheduler_app/app.js &
 
 # Set the working directory
 cd /steamcmd/rust
