@@ -4,8 +4,8 @@ var debug = false;
 
 var child_process = require('child_process');
 
-var startupDelayInSeconds = 60 * 5; // TODO: Set to 5 minutes
-var runIntervalInSeconds = 60 * 15; // TODO: Set to 15 minutes
+var startupDelayInSeconds = 60 * 5;
+var runIntervalInSeconds = 60 * 5;
 
 if (debug)
 {
