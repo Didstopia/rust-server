@@ -17,13 +17,16 @@ ws.on('open', function open()
 			setTimeout(function()
 			{
 				ws.close(1000);
+
+				// After 120 seconds, if the server's still running, forcibly shut it down
+				setTimeout(function()
+				{
+					var child_process = require('child_process');
+					child_process.execSync('kill -s 2 $(pidof bash)');
+				}, 1000 * 120);
 			}, 1000);
 		}, 1000 * 60);
 	}, 1000);
-});
-ws.on('close', function close()
-{
-	process.exit(0);
 });
 
 function createPacket(command)

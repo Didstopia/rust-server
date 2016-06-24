@@ -21,6 +21,10 @@ ws.on('close', function close()
 {
 	process.exit(0);
 });
+ws.on('error', function()
+{
+	process.exit(1);
+});
 
 function createPacket(command)
 {
