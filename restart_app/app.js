@@ -10,10 +10,11 @@ ws.on('open', function open()
 {
 	setTimeout(function()
 	{
-		ws.send(createPacket("say NOTICE: We're updating the server, get to a safe spot!"));
+		ws.send(createPacket("say NOTICE: We're updating the server in a couple of minutes, get to a safe spot!"));
 		setTimeout(function()
 		{
-			ws.send(createPacket("restart 60"));
+			ws.send(createPacket("quit"));
+			//ws.send(createPacket("restart 60")); // NOTE: Don't use restart, because that doesn't actually restart the container!
 			setTimeout(function()
 			{
 				ws.close(1000);
@@ -25,7 +26,7 @@ ws.on('open', function open()
 					child_process.execSync('kill -s 2 $(pidof bash)');
 				}, 1000 * 120);
 			}, 1000);
-		}, 1000 * 60);
+		}, 1000 * 120);
 	}, 1000);
 });
 
