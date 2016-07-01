@@ -39,12 +39,22 @@ else
 	sed -i "s/app_update 258550.*validate/app_update 258550 validate/g" /install.txt
 fi
 
+# Disable auto-update if start mode is 2
+if [ "$RUST_START_MODE" = "2" ]; then
+	RUST_DISABLE_AUTO_UPDATE=1
+fi
+
 # Check if we are auto-updating or not
 if [ "$RUST_DISABLE_AUTO_UPDATE" = "1" ]; then
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
-		# Install/update Rust from install.txt
-		echo "Installing/updating Rust.."
-		bash /steamcmd/steamcmd.sh +runscript /install.txt
+		# Disable auto-update if start mode is 2
+		if [ "$RUST_START_MODE" = "2" ]; then
+			echo "Skipping Rust update due to mode 2.."
+		else
+			# Install/update Rust from install.txt
+			echo "Installing/updating Rust.."
+			bash /steamcmd/steamcmd.sh +runscript /install.txt
+		fi
 	else
 		echo "Rust seems to be installed, skipping automatic update.."
 	fi
@@ -70,6 +80,12 @@ if [ -d "/oxide" ]; then
 	# Install/update Oxide
 	echo "Installing/updating Oxide.."
 	cp -fr /oxide/* /steamcmd/rust/
+fi
+
+# Start mode 1 means we only want to update
+if [ "$RUST_START_MODE" = "1" ]; then
+	echo "Exiting, start mode is 1.."
+	exit
 fi
 
 # Add RCON support if necessary
@@ -118,12 +134,6 @@ if [ -f "/steamcmd/rust/seed_override" ]; then
 		fi
 	fi
 fi
-
-# Use an intermediary file to pass env vars to cron
-if [ -f "/root/.profile" ]; then
-	rm -fr /root/.profile
-fi
-env |sed 's/^\(.*\)$/export \1/g' >/root/.profile
 
 # Start cron
 echo "Starting scheduled task manager.."
