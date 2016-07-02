@@ -7,5 +7,5 @@
     "start": "nodejs app.js"
   },
   "author": "",
-  "private": "true",
+  "private": "true"
 }

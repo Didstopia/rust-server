@@ -2,6 +2,15 @@ FROM ubuntu:16.04
 
 MAINTAINER didstopia
 
+# Setup the locales
+RUN locale-gen en_US.UTF-8  
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8 
+
+# Fixes apt-get warnings
+ENV DEBIAN_FRONTEND noninteractive
+
 # Run a quick apt-get update/upgrade
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge
 
@@ -20,10 +29,6 @@ RUN apt-get install -y \
 
 # Run as root
 USER root
-
-# Setup the default timezone
-ENV TZ=Europe/Helsinki
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Remove default nginx stuff
 RUN rm -fr /usr/share/nginx/html/* && \
@@ -53,7 +58,7 @@ ADD start_rust.sh /start.sh
 ADD update_check.sh /update_check.sh
 
 # Install NodeJS (see below)
-RUN curl -sL https://deb.nodesource.com/setup_5.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
 RUN apt-get install -y nodejs
 
 # Setup proper shutdown support
@@ -95,6 +100,9 @@ ENV RUST_DISABLE_AUTO_UPDATE "0"
 ENV RUST_UPDATE_CHECKING "0"
 ENV RUST_UPDATE_BRANCH "public"
 ENV RUST_START_MODE "0"
+
+# Cleanup
+ENV DEBIAN_FRONTEND newt
 
 # Start the server
 ENTRYPOINT ["./start.sh"]

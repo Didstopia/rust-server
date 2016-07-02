@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pid=0
+#pid=0
 
 trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 exit_handler()
@@ -16,8 +16,6 @@ exit_handler()
 	node /shutdown_app/app.js
 	sleep 1
 
-	# Force kill and exit
-	kill $pid
 	exit
 }
 
@@ -144,7 +142,6 @@ cd /steamcmd/rust
 
 # Run the server
 echo "Starting Rust.."
-/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
-pid="$!"
+/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION"
 
-wait
+exit
