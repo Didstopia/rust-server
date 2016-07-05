@@ -22,9 +22,9 @@ RUST_SERVER_BANNER_URL (DEFAULT: "" - The publicly visible server banner image U
 RUST_RCON_WEB (DEFAULT "1" - Set to 1 or 0 to enable or disable the web-based RCON server)
 RUST_RCON_PORT (DEFAULT: "28016" - RCON server port)
 RUST_RCON_PASSWORD (DEFAULT: "docker" - RCON server password, please change this!)
-RUST_RESPAWN_ON_RESTART (DEFAULT: "0" - Controls whether to respawn resources on startup)
-RUST_DISABLE_AUTO_UPDATE (DEFAULT: "0" - Disables automatic updating on startup)
-RUST_BRANCH (DEFAULT: Not set - Sets the branch to use, eg. set to "-beta prerelease" for the prerelease branch)
+RUST_BRANCH (DEFAULT: Not set - Sets the branch argument to use, eg. set to "-beta prerelease" for the prerelease branch)
+RUST_UPDATE_CHECKING (DEFAULT: "0" - Set to 1 to enable fully automatic update checking, notifying players and restarting to install updates)
+RUST_UPDATE_BRANCH (DEFAULT: "public" - Set to match the branch that you want to use for updating, ie. "prerelease" or "public", but do not specify arguments like "-beta")
 RUST_START_MODE (DEFAULT: 0 - Determines if the server should update and then start (0), only update (1) or only start (2))
 ```
 

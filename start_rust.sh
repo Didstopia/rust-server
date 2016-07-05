@@ -39,20 +39,11 @@ fi
 
 # Disable auto-update if start mode is 2
 if [ "$RUST_START_MODE" = "2" ]; then
-	RUST_DISABLE_AUTO_UPDATE=1
-fi
-
-# Check if we are auto-updating or not
-if [ "$RUST_DISABLE_AUTO_UPDATE" = "1" ]; then
+	# Check that Rust exists in the first place
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
-		# Disable auto-update if start mode is 2
-		if [ "$RUST_START_MODE" = "2" ]; then
-			echo "Skipping Rust update due to mode 2.."
-		else
-			# Install/update Rust from install.txt
-			echo "Installing/updating Rust.."
-			bash /steamcmd/steamcmd.sh +runscript /install.txt
-		fi
+		# Install Rust from install.txt
+		echo "Installing Rust.."
+		bash /steamcmd/steamcmd.sh +runscript /install.txt
 	else
 		echo "Rust seems to be installed, skipping automatic update.."
 	fi
@@ -94,22 +85,17 @@ fi
 if [ ! -z ${RUST_RCON_PASSWORD+x} ]; then
 	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.password $RUST_RCON_PASSWORD"
 fi
-if [ ! -z ${RUST_RESPAWN_ON_RESTART+x} ]; then
-	if [ "$RUST_RESPAWN_ON_RESTART" = "1" ]; then
-		RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +spawn.fill_groups 1"
-	fi
-fi
 
 if [ ! -z ${RUST_RCON_WEB+x} ]; then
 	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.web $RUST_RCON_WEB"
 	if [ "$RUST_RCON_WEB" = "1" ]; then
-		# Fix the webrcon (customize a few elements)
+		# Fix the webrcon (customizes a few elements)
 		bash /tmp/fix_conn.sh
 
 		# Start nginx (in the background)
 		echo "Starting web server.."
 		nginx && sleep 5
-		#nginx -g "daemon off;" && sleep 5
+		#nginx -g "daemon off;" && sleep 5 ## Used for debugging nginx
 	fi
 fi
 
