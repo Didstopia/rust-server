@@ -3,5 +3,5 @@
 ./docker_build.sh
 
 # Run the server
-docker run -p 28015:28015 -p 28016:28016 -p 8080:8080 -m 4g -v $(pwd)/rust_data:/steamcmd/rust -e RUST_UPDATE_CHECKING=1 -e RUST_BRANCH="-beta prerelease" -e RUST_UPDATE_BRANCH="prerelease" --name rust-server -d didstopia/rust-server:latest
+docker run -p 0.0.0.0:28015:28015 -p 0.0.0.0:28015:28015/udp -p 28016:28016 -p 0.0.0.0:8080:8080 -m 4g -v $(pwd)/rust_data:/steamcmd/rust -e RUST_UPDATE_CHECKING=1 -e RUST_BRANCH="public" -e RUST_UPDATE_BRANCH="public" --name rust-server -d didstopia/rust-server:latest
 docker logs -f rust-server
