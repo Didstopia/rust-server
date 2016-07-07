@@ -11,6 +11,11 @@ exit_handler()
 		# Backup the current blueprint data
 		cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" "/steamcmd/rust/UserPersistence.db.bak"
 	fi
+
+	if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp.db" ]; then
+		# Backup the current XP data
+		cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp.db" "/steamcmd/rust/xp.db.bak"
+	fi
 	
 	# Execute the RCON shutdown command
 	node /shutdown_app/app.js
@@ -115,6 +120,10 @@ if [ -f "/steamcmd/rust/seed_override" ]; then
 		if [ -f "/steamcmd/rust/UserPersistence.db.bak" ]; then
 			echo "Copying blueprint backup in place.."
 			cp -fr "/steamcmd/rust/UserPersistence.db.bak" "/steamcmd/rust/server/$RUST_SEED_OVERRIDE/UserPersistence.db"
+		fi
+		if [ -f "/steamcmd/rust/xp.db.bak" ]; then
+			echo "Copying blueprint backup in place.."
+			cp -fr "/steamcmd/rust/xp.db.bak" "/steamcmd/rust/server/$RUST_SEED_OVERRIDE/xp.db"
 		fi
 	fi
 fi
