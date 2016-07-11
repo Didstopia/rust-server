@@ -28,4 +28,11 @@ RUST_UPDATE_BRANCH (DEFAULT: "public" - Set to match the branch that you want to
 RUST_START_MODE (DEFAULT: 0 - Determines if the server should update and then start (0), only update (1) or only start (2))
 ```
 
+# How to send or receive command to/from the server
+
+We recently added a small application, called *rcon*, that can both send and receive messages to the server, much like the console on the Windows version, but this happens to use RCON (webrcon).
+To use it, simply run the following on the host: `docker exec rust-server rcon say Hello World`, substituting *rust-server* for your own container name.
+
+# Anything else
+
 If you need help, have questions or bug submissions, feel free to contact me **@Dids** on Twitter, and on the *Rust Server Owners* Slack community.
