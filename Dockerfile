@@ -76,6 +76,12 @@ ADD scheduler_app/ /scheduler_app/
 WORKDIR /scheduler_app
 RUN npm install
 
+# Setup rcon command relay app
+ADD rcon_app/ /rcon_app/
+WORKDIR /rcon_app
+RUN npm install
+RUN ln -s /rcon_app/app.js /usr/bin/rcon
+
 # Set the current working directory
 WORKDIR /
 
