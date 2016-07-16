@@ -1,6 +1,6 @@
 # Rust server that runs inside a Docker container
 
-[![Install on DigitalOcean](http://installer.71m.us/button.svg)](http://installer.71m.us/install?url=https://github.com/didstopia/rust-server)
+[![Install on DigitalOcean](http://installer.71m.us/button.svg)](http://installer.71m.us/install?url=https://github.com/didstopia/rust-server" target="_blank)
 
 **NEW**: This image now also supports having a modded server (using Oxide), check the ```RUST_OXIDE_ENABLED``` variable below!
 
