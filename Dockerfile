@@ -12,7 +12,7 @@ ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
 
 # Run a quick apt-get update/upgrade
-RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y --purge
+RUN apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && apt-get autoremove -y
 
 # Install dependencies, mainly for SteamCMD
 RUN apt-get install -y \
