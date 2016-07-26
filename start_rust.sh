@@ -26,7 +26,9 @@ exit_handler()
 	node /shutdown_app/app.js
 	sleep 1
 
-	exit
+	#kill -TERM "$child"
+
+	#exit
 }
 
 # Trap specific signals and forward to the exit handler
