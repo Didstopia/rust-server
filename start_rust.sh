@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 
-#pid=0
-
-trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
+# Define the exit handler
 exit_handler()
 {
 	echo "Shutdown signal received"
 
-	if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" ]; then
-		# Backup the current blueprint data
-		cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" "/steamcmd/rust/UserPersistence.db.bak"
-	fi
+	# Only do backups if we're using the seed override
+	if [ -f "/steamcmd/rust/seed_override" ]; then
+		# Create the backup directory if it doesn't exist
+		if [ ! -d "/steamcmd/rust/bak" ]; then
+			mkdir -p /steamcmd/rust/bak
+		fi
+		if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" ]; then
+			# Backup all the current unlocked blueprint data
+			cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence*.db" "/steamcmd/rust/bak/"
+		fi
 
-	if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp.db" ]; then
-		# Backup the current XP data
-		cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp.db" "/steamcmd/rust/xp.db.bak"
+		if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp.db" ]; then
+			# Backup all the current XP data
+			cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp*.db" "/steamcmd/rust/bak/"
+		fi
 	fi
 	
 	# Execute the RCON shutdown command
@@ -23,6 +28,9 @@ exit_handler()
 
 	exit
 }
+
+# Trap specific signals and forward to the exit handler
+trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 
 # Create the necessary folder structure
 if [ ! -d "/steamcmd/rust" ]; then
@@ -150,6 +158,7 @@ cd /steamcmd/rust
 
 # Run the server
 echo "Starting Rust.."
-/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION"
+/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
 
-exit
+child=$!
+wait "$child"
