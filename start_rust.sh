@@ -151,6 +151,36 @@ if [ -f "/steamcmd/rust/seed_override" ]; then
 	fi
 fi
 
+## Disable logrotate if "-logfile" is set in $RUST_STARTUP_COMMAND
+LOGROTATE_ENABLED=1
+RUST_STARTUP_COMMAND_LOWERCASE=`echo "$RUST_STARTUP_COMMAND" | sed 's/./\L&/g'`
+if [[ $RUST_STARTUP_COMMAND_LOWERCASE == *" -logfile "* ]]; then
+	LOGROTATE_ENABLED=0
+fi
+
+if [ "$LOGROTATE_ENABLED" = "1" ]; then
+	echo "Log rotation enabled!"
+
+	# Log to stdout by default
+	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND -logfile /dev/stdout"
+	echo "Using startup arguments: $RUST_SERVER_STARTUP_ARGUMENTS"
+
+	# Create the logging directory structure
+	if [ ! -d "/steamcmd/rust/logs/archive" ]; then
+		mkdir -p /steamcmd/rust/logs/archive
+	fi
+
+	# Set the logfile filename/path
+	DATE=`date '+%Y-%m-%d_%H-%M-%S'`
+	RUST_SERVER_LOG_FILE="/steamcmd/rust/logs/$RUST_SERVER_IDENTITY"_"$DATE.txt"
+
+	# Archive old logs
+	echo "Cleaning up old logs.."
+	mv /steamcmd/rust/logs/*.txt /steamcmd/rust/logs/archive
+else
+	echo "Log rotation disabled!"
+fi
+
 # Start cron
 echo "Starting scheduled task manager.."
 node /scheduler_app/app.js &
@@ -160,7 +190,11 @@ cd /steamcmd/rust
 
 # Run the server
 echo "Starting Rust.."
-/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
+if [ "$LOGROTATE_ENABLED" = "1" ]; then
+	unbuffer /steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" 2>&1 | grep --line-buffered -Ev '^\s*$|Filename' | tee $RUST_SERVER_LOG_FILE &
+else
+	/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" &
+fi
 
 child=$!
 wait "$child"

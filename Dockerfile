@@ -25,7 +25,8 @@ RUN apt-get install -y \
     wget \
     bsdtar \
     nginx \
-    build-essential
+    build-essential \
+    expect
 
 # Run as root
 USER root
@@ -47,15 +48,6 @@ ADD fix_conn.sh /tmp/fix_conn.sh
 # Create and set the steamcmd folder as a volume
 RUN mkdir -p /steamcmd/rust
 VOLUME ["/steamcmd/rust"]
-
-# Add the steamcmd installation script
-ADD install.txt /install.txt
-
-# Copy the Rust startup script
-ADD start_rust.sh /start.sh
-
-# Copy the Rust update check script
-ADD update_check.sh /update_check.sh
 
 # Install NodeJS (see below)
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
@@ -82,6 +74,15 @@ WORKDIR /rcon_app
 RUN npm install
 RUN ln -s /rcon_app/app.js /usr/bin/rcon
 
+# Add the steamcmd installation script
+ADD install.txt /install.txt
+
+# Copy the Rust startup script
+ADD start_rust.sh /start.sh
+
+# Copy the Rust update check script
+ADD update_check.sh /update_check.sh
+
 # Set the current working directory
 WORKDIR /
 
@@ -91,7 +92,7 @@ EXPOSE 28015
 EXPOSE 28016
 
 # Setup default environment variables for the server
-ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -logfile /dev/stdout +server.secure 1"
+ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load +server.secure 1"
 ENV RUST_SERVER_IDENTITY "docker"
 ENV RUST_SERVER_SEED "12345"
 ENV RUST_SERVER_NAME "Rust Server [DOCKER]"

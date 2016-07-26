@@ -16,7 +16,7 @@ Also note that this image provides the new web-based RCON, so you should set ```
 
 The following environment variables are available:
 ```
-RUST_SERVER_STARTUP_ARGUMENTS (DEFAULT: "-batchmode -load -logfile /dev/stdout +server.secure 1")
+RUST_SERVER_STARTUP_ARGUMENTS (DEFAULT: "-batchmode -load +server.secure 1")
 RUST_SERVER_IDENTITY (DEFAULT: "docker" - Mainly used for the name of the save directory)
 RUST_SERVER_SEED (DEFAULT: "12345" - The server map seed, must be an integer)
 RUST_SERVER_NAME (DEFAULT: "Rust Server [DOCKER]" - The publicly visible server name)
@@ -33,6 +33,12 @@ RUST_START_MODE (DEFAULT: "0" - Determines if the server should update and then 
 RUST_OXIDE_ENABLED (DEFAULT: "0" - Set to 1 to automatically install the latest version of Oxide)
 RUST_OXIDE_UPDATE_ON_BOOT (DEFAULT: "1" - Set to 0 to disable automatic update of Oxide on boot)
 ```
+
+# Logging and rotating logs
+
+The image now supports log rotation, and all you need to do to enable it is to remove any `-logfile` arguments from your startup arguments.
+Log files will be created under `logs/` with the server identity and the current date and time.
+When the server starts up or restarts, it will move old logs to `logs/archive/`.
 
 # How to send or receive command to/from the server
 
