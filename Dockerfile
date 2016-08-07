@@ -38,7 +38,7 @@ RUN rm -fr /usr/share/nginx/html/* && \
 
 # Install webrcon
 COPY nginx_rcon.conf /etc/nginx/nginx.conf
-RUN curl -sL https://github.com/Didstopia/webrcon/archive/gh-pages.zip | bsdtar -xvf- -C /tmp && \
+RUN curl -sL https://github.com/Facepunch/webrcon/archive/gh-pages.zip | bsdtar -xvf- -C /tmp && \
 	mv /tmp/webrcon-gh-pages/* /usr/share/nginx/html/ && \
 	rm -fr /tmp/webrcon-gh-pages
 
