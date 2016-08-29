@@ -36,11 +36,11 @@ RUN rm -fr /usr/share/nginx/html/* && \
 	rm -fr /etc/nginx/sites-available/* && \
 	rm -fr /etc/nginx/sites-enabled/*
 
-# Install webrcon
+# Install webrcon (specific commit)
 COPY nginx_rcon.conf /etc/nginx/nginx.conf
-RUN curl -sL https://github.com/Facepunch/webrcon/archive/gh-pages.zip | bsdtar -xvf- -C /tmp && \
-	mv /tmp/webrcon-gh-pages/* /usr/share/nginx/html/ && \
-	rm -fr /tmp/webrcon-gh-pages
+RUN curl -sL https://github.com/Facepunch/webrcon/archive/2da33519359941e83ab25632411f7de595c7edfb.zip | bsdtar -xvf- -C /tmp && \
+	mv /tmp/webrcon-2da33519359941e83ab25632411f7de595c7edfb/* /usr/share/nginx/html/ && \
+	rm -fr /tmp/webrcon-2da33519359941e83ab25632411f7de595c7edfb
 
 # Customize the webrcon package to fit our needs
 ADD fix_conn.sh /tmp/fix_conn.sh
