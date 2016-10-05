@@ -1,5 +1,5 @@
 sample.txt
-rust_data/
+rust_data*/
 scheduler_app/node_modules/
 restart_app/node_modules/
 shutdown_app/node_modules/

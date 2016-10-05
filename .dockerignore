@@ -6,7 +6,7 @@ restart_app/node_modules
 rcon_app/node_modules
 app.yml
 *.log
-rust_data
+rust_data*
 .DS_Store
 docker_*.sh
 .git/

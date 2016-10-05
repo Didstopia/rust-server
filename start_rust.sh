@@ -52,20 +52,30 @@ else
 	sed -i "s/app_update 258550.*validate/app_update 258550 validate/g" /install.txt
 fi
 
+## TODO: Check if steamcmd install/update failed
+
 # Disable auto-update if start mode is 2
 if [ "$RUST_START_MODE" = "2" ]; then
 	# Check that Rust exists in the first place
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
 		# Install Rust from install.txt
-		echo "Installing Rust.."
-		bash /steamcmd/steamcmd.sh +runscript /install.txt
+		echo "Installing Rust.. (this might take a while, be patient)"
+		#bash /steamcmd/steamcmd.sh +runscript /install.txt
+		if bash /steamcmd/steamcmd.sh +runscript /install.txt | grep -q 'Error'; then
+			echo "Exiting, steamcmd install or update failed.."
+			exit
+		fi
 	else
 		echo "Rust seems to be installed, skipping automatic update.."
 	fi
 else
 	# Install/update Rust from install.txt
-	echo "Installing/updating Rust.."
-	bash /steamcmd/steamcmd.sh +runscript /install.txt
+	echo "Installing/updating Rust.. (this might take a while, be patient)"
+	#bash /steamcmd/steamcmd.sh +runscript /install.txt
+	if bash /steamcmd/steamcmd.sh +runscript /install.txt | grep -q 'Error'; then
+		echo "Exiting, steamcmd install or update failed.."
+		exit
+	fi
 
 	# Run the update check if it's not been run before
 	if [ ! -f "/steamcmd/rust/build.id" ]; then
@@ -78,6 +88,9 @@ else
 		fi
 	fi
 fi
+
+# Rust includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/rust/RustDedicated_Data/Plugins/x86_64
 
 # Check if Oxide is enabled
 if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
