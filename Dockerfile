@@ -26,7 +26,8 @@ RUN apt-get install -y \
     bsdtar \
     nginx \
     build-essential \
-    expect
+    expect \
+    libgdiplus
 
 # Run as root
 USER root
