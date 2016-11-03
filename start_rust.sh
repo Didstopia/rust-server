@@ -89,6 +89,9 @@ else
 	fi
 fi
 
+# Rust includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists		
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/rust/RustDedicated_Data/Plugins/x86_64
+
 # Check if Oxide is enabled
 if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# Next check if Oxide doesn't' exist, or if we want to always update it
