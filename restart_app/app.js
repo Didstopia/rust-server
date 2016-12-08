@@ -6,6 +6,7 @@ var request = require('request');
 var isRestarting = false;
 var now = Math.floor(new Date() / 1000);
 var timeout = 1000 * 60 * 30;
+var updateCheckInterval = 1000 * 60 * 5;
 var debug = false;
 
 if (debug)
@@ -13,7 +14,13 @@ if (debug)
 	timeout = 1000 * 60;
 }
 
+// Check for updates every 5 minutes
 checkForClientUpdate();
+setTimeout(function()
+{
+	console.log("Checking if a client update is available..");
+	checkForClientUpdate();
+}, updateCheckInterval);
 
 // Timeout after 30 minutes and restart
 setTimeout(function()
@@ -24,6 +31,7 @@ setTimeout(function()
 
 function checkForClientUpdate()
 {
+	if (isRestarting) return;
 	request({ url: 'https://whenisupdate.com/api.json', headers: { Referer: 'rust-docker-server' } }, function(error, response, body)
 	{
 		if (!error && response.statusCode == 200)
@@ -40,7 +48,7 @@ function checkForClientUpdate()
 		    	}
 		    }
 	  	}
-	  	checkForClientUpdate();
+	  	if (!isRestarting) checkForClientUpdate();
 	});
 }
 
