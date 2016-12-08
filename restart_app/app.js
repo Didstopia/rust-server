@@ -67,7 +67,7 @@ function restart()
 	{
 		setTimeout(function()
 		{
-			ws.send(createPacket("say NOTICE: We're updating the server in a couple of minutes, get to a safe spot!"));
+			ws.send(createPacket("say NOTICE: We're updating the server in 5 minutes, so get to a safe spot!"));
 			setTimeout(function()
 			{
 				ws.send(createPacket("global.kickall (Updating/Restarting)"));
@@ -79,15 +79,15 @@ function restart()
 					{
 						ws.close(1000);
 
-						// After 120 seconds, if the server's still running, forcibly shut it down
+						// After 2 minutes, if the server's still running, forcibly shut it down
 						setTimeout(function()
 						{
 							var child_process = require('child_process');
 							child_process.execSync('kill -s 2 $(pidof bash)');
-						}, 1000 * 120);
+						}, 1000 * 60 * 2);
 					}, 1000);
 				}, 1000);
-			}, 1000 * 120);
+			}, 1000 * 60 * 5);
 		}, 1000);
 	});
 }
