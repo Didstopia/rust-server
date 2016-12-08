@@ -6,8 +6,6 @@ set -m
 if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	echo "Checking Steam for updates.."
 else
-	## REMOVE THIS
-	echo "Updates disabled"
 	exit
 fi
 
@@ -34,19 +32,19 @@ NEW_BUILDID="$(./steamcmd/steamcmd.sh +login anonymous +app_info_update 1 +app_i
 # Check that we actually got a new build id
 STRING_SIZE=${#NEW_BUILDID}
 if [ "$STRING_SIZE" -lt "6" ]; then
-	echo "Error getting latest build id from Steam, automatic updates disabled.."
+	echo "Error getting latest server build id from Steam, automatic updates disabled.."
 	exit
 fi
 
 # Skip update checking if this is the first time
 if [ ! -f "/steamcmd/rust/build.id" ]; then
-	echo "First time running update check (build id not found), skipping update.."
+	echo "First time running update check (server build id not found), skipping update.."
 	echo $NEW_BUILDID > /steamcmd/rust/build.id
 	exit
 else
 	STRING_SIZE=${#OLD_BUILDID}
 	if [ "$STRING_SIZE" -lt "6" ]; then
-		echo "First time running update check (build id empty), skipping update.."
+		echo "First time running update check (server build id empty), skipping update.."
 		echo $NEW_BUILDID > /steamcmd/rust/build.id
 		exit
 	fi
@@ -57,7 +55,7 @@ if [ "$OLD_BUILDID" = "$NEW_BUILDID" ]; then
 	echo "Build id $OLD_BUILDID is already the latest, skipping update.."
 	exit
 else
-	echo "Latest build id ($NEW_BUILDID) is newer than the current one ($OLD_BUILDID), restarting the server and forcing an update.."
+	echo "Latest server build id ($NEW_BUILDID) is newer than the current one ($OLD_BUILDID), waiting for client update.."
 	echo $NEW_BUILDID > /steamcmd/rust/build.id
 	node /restart_app/app.js &
 	exit
