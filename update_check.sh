@@ -2,6 +2,20 @@
 
 set -m
 
+# Use a lock file to determine if we're already checking for updates
+if ! mkdir /tmp/update_check.lock; then
+    printf "Failed to aquire lock.\n" >&2
+    exit 1
+fi
+trap 'rm -rf /tmp/update_check.lock' EXIT  # remove the lockdir on exit
+
+# Check if restart app is already running and bail out if so
+#IS_RUNNING=`pgrep -fl restart_app`
+#if [ $IS_RUNNING -ge 1 ]; then
+#    echo "Update checker is already running.."
+#    exit
+#fi
+
 # Check if we are auto-updating or not
 if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	echo "Checking Steam for updates.."
@@ -32,7 +46,7 @@ NEW_BUILDID="$(./steamcmd/steamcmd.sh +login anonymous +app_info_update 1 +app_i
 # Check that we actually got a new build id
 STRING_SIZE=${#NEW_BUILDID}
 if [ "$STRING_SIZE" -lt "6" ]; then
-	echo "Error getting latest server build id from Steam, automatic updates disabled.."
+	echo "Error getting latest server build id from Steam.."
 	exit
 fi
 
@@ -55,8 +69,15 @@ if [ "$OLD_BUILDID" = "$NEW_BUILDID" ]; then
 	echo "Build id $OLD_BUILDID is already the latest, skipping update.."
 	exit
 else
+	# Use a lock file to determine if we're already checking for updates
+	if ! mkdir /tmp/restart_app.lock; then
+	    printf "Failed to aquire lock.\n" >&2
+	    exit 1
+	fi
+	
 	echo "Latest server build id ($NEW_BUILDID) is newer than the current one ($OLD_BUILDID), waiting for client update.."
 	echo $NEW_BUILDID > /steamcmd/rust/build.id
-	node /restart_app/app.js &
-	exit
+	exec node /restart_app/app.js
+	child=$!
+	wait "$child"
 fi

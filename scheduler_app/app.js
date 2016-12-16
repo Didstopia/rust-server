@@ -23,10 +23,12 @@ function checkForUpdates()
 {
 	setTimeout(function()
 	{
-		if (debug) console.log("Scheduled update triggered");
-		child_process.exec('bash /update_check.sh', { timeout: 60 * 1000, env: process.env }, function (err, stdout, stderr)
+		if (debug) console.log("Running bash /update_check.sh");
+		child_process.exec('bash /update_check.sh', { /*timeout: 60 * 1000,*/ env: process.env }, function (err, stdout, stderr)
 		{
-			if (debug) console.log(stdout);
+			if (debug) console.log("bash /update_check.sh STDOUT: " + stdout);
+			if (debug && err) console.log("bash /update_check.sh ERR: " + err);
+			if (debug && stderr) console.log("bash /update_check.sh STDERR: " + stderr);
 			checkForUpdates();
 		});		
 	}, 1000 * runIntervalInSeconds);

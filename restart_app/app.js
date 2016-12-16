@@ -1,26 +1,18 @@
 #!/usr/bin/env node
 
-// TODO: Wait for client update, or 30 minutes, whichever comes first
+var debug = false;
 
 var request = require('request');
 var isRestarting = false;
 var now = Math.floor(new Date() / 1000);
-var timeout = 1000 * 60 * 30;
-var updateCheckInterval = 1000 * 60 * 5;
-var debug = false;
+var timeout = (1000 * 60) * 30;
+var updateCheckInterval = (1000 * 60) * 5;
 
 if (debug)
 {
-	timeout = 1000 * 60;
+	updateCheckInterval = 5000; // Check every 5 seconds
+	timeout = 1000 * 60; // Timeout after a minute
 }
-
-// Check for updates every 5 minutes
-checkForClientUpdate();
-setTimeout(function()
-{
-	console.log("Checking if a client update is available..");
-	checkForClientUpdate();
-}, updateCheckInterval);
 
 // Timeout after 30 minutes and restart
 setTimeout(function()
@@ -29,10 +21,19 @@ setTimeout(function()
 	restart();
 }, timeout);
 
+// Start checking for client updates
+checkForClientUpdate();
+
 function checkForClientUpdate()
 {
-	if (isRestarting) return;
-	request({ url: 'https://whenisupdate.com/api.json', headers: { Referer: 'rust-docker-server' } }, function(error, response, body)
+	if (isRestarting)
+	{
+		if (debug) console.log("We're restarting, skipping client update check..");
+		return;
+	}
+
+	console.log("Checking if a client update is available..");
+	request({ url: 'https://whenisupdate.com/api.json', headers: { Referer: 'rust-docker-server' }, timeout: 10000 }, function(error, response, body)
 	{
 		if (!error && response.statusCode == 200)
 		{
@@ -47,14 +48,29 @@ function checkForClientUpdate()
 		    		return;
 		    	}
 		    }
+		    if (debug) console.log("Client update not out yet..");
 	  	}
-	  	if (!isRestarting) checkForClientUpdate();
+	  	else if (debug)
+	  	{
+	  		console.log("Error: " + error);
+	  	}
+
+	  	// Keep checking for client updates every 5 minutes
+	  	setTimeout(function()
+		{
+			checkForClientUpdate();
+		}, updateCheckInterval);
 	});
 }
 
 function restart()
 {
-	if (isRestarting) return;
+	if (debug) console.log("Restarting..");
+	if (isRestarting)
+	{
+		if (debug) console.log("We're already restarting..");
+		return;
+	}
 	isRestarting = true;
 
 	var serverHostname = 'localhost';
@@ -82,6 +98,9 @@ function restart()
 						// After 2 minutes, if the server's still running, forcibly shut it down
 						setTimeout(function()
 						{
+							var fs = require('fs');
+							fs.unlinkSync('/tmp/restart_app.lock');
+
 							var child_process = require('child_process');
 							child_process.execSync('kill -s 2 $(pidof bash)');
 						}, 1000 * 60 * 2);

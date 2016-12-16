@@ -34,6 +34,9 @@ exit_handler()
 # Trap specific signals and forward to the exit handler
 trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 
+# Remove old locks
+rm -fr /tmp/*.lock
+
 # Create the necessary folder structure
 if [ ! -d "/steamcmd/rust" ]; then
 	echo "Creating folder structure.."
