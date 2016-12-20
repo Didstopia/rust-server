@@ -39,9 +39,9 @@ RUN rm -fr /usr/share/nginx/html/* && \
 
 # Install webrcon (specific commit)
 COPY nginx_rcon.conf /etc/nginx/nginx.conf
-RUN curl -sL https://github.com/Facepunch/webrcon/archive/2da33519359941e83ab25632411f7de595c7edfb.zip | bsdtar -xvf- -C /tmp && \
-	mv /tmp/webrcon-2da33519359941e83ab25632411f7de595c7edfb/* /usr/share/nginx/html/ && \
-	rm -fr /tmp/webrcon-2da33519359941e83ab25632411f7de595c7edfb
+RUN curl -sL https://github.com/Facepunch/webrcon/archive/38c33be89e7c1731607ff7305ede847c95e528de.zip | bsdtar -xvf- -C /tmp && \
+	mv /tmp/webrcon-38c33be89e7c1731607ff7305ede847c95e528de/* /usr/share/nginx/html/ && \
+	rm -fr /tmp/webrcon-38c33be89e7c1731607ff7305ede847c95e528de
 
 # Customize the webrcon package to fit our needs
 ADD fix_conn.sh /tmp/fix_conn.sh
