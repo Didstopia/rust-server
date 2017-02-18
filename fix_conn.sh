@@ -5,6 +5,9 @@
 # Replace the trimmed address field with the current domain/hostname and RCON port
 OLD_TRIM_CODE='scope.Address = $scope.Address.trim();'
 NEW_ADDRESS_CODE='scope.Address = $location.host() + '"\":$RUST_RCON_PORT\";"
+if [ ! -z "$RUST_RCON_HOSTNAME" ]; then
+	NEW_ADDRESS_CODE='scope.Address = '"\"$RUST_RCON_HOSTNAME:$RUST_RCON_PORT\";"
+fi
 sed -i -e 's/'"$OLD_TRIM_CODE"'/'"$NEW_ADDRESS_CODE"'/g' /usr/share/nginx/html/js/connection.js
 
 # Replace the help text with our own
