@@ -83,22 +83,22 @@ function restart()
 	{
 		setTimeout(function()
 		{
-			ws.send(createPacket("say NOTICE: We're updating the server in 5 minutes, so get to a safe spot!"));
+			ws.send(createPacket("say NOTICE: We're updating the server in <color=orange>5 minutes</color>, so get to a safe spot!"));
 			setTimeout(function()
 			{
-				ws.send(createPacket("say NOTICE: We're updating the server in 4 minutes, so get to a safe spot!"));
+				ws.send(createPacket("say NOTICE: We're updating the server in <color=orange>4 minutes</color>, so get to a safe spot!"));
 				setTimeout(function()
 				{
-					ws.send(createPacket("say NOTICE: We're updating the server in 3 minutes, so get to a safe spot!"));
+					ws.send(createPacket("say NOTICE: We're updating the server in <color=orange>3 minutes</color>, so get to a safe spot!"));
 					setTimeout(function()
 					{
-						ws.send(createPacket("say NOTICE: We're updating the server in 2 minutes, so get to a safe spot!"));
+						ws.send(createPacket("say NOTICE: We're updating the server in <color=orange>2 minutes</color>, so get to a safe spot!"));
 						setTimeout(function()
 						{
-							ws.send(createPacket("say NOTICE: We're updating the server in 1 minutes, so get to a safe spot!"));
+							ws.send(createPacket("say NOTICE: We're updating the server in <color=orange>1 minute</color>, so get to a safe spot!"));
 							setTimeout(function()
 							{
-								ws.send(createPacket("global.kickall (Updating/Restarting)"));
+								ws.send(createPacket("global.kickall <color=orange>Updating/Restarting</color>"));
 								setTimeout(function()
 								{
 									ws.send(createPacket("quit"));
