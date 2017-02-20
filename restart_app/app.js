@@ -86,27 +86,43 @@ function restart()
 			ws.send(createPacket("say NOTICE: We're updating the server in 5 minutes, so get to a safe spot!"));
 			setTimeout(function()
 			{
-				ws.send(createPacket("global.kickall (Updating/Restarting)"));
+				ws.send(createPacket("say NOTICE: We're updating the server in 4 minutes, so get to a safe spot!"));
 				setTimeout(function()
 				{
-					ws.send(createPacket("quit"));
-					//ws.send(createPacket("restart 60")); // NOTE: Don't use restart, because that doesn't actually restart the container!
+					ws.send(createPacket("say NOTICE: We're updating the server in 3 minutes, so get to a safe spot!"));
 					setTimeout(function()
 					{
-						ws.close(1000);
-
-						// After 2 minutes, if the server's still running, forcibly shut it down
+						ws.send(createPacket("say NOTICE: We're updating the server in 2 minutes, so get to a safe spot!"));
 						setTimeout(function()
 						{
-							var fs = require('fs');
-							fs.unlinkSync('/tmp/restart_app.lock');
+							ws.send(createPacket("say NOTICE: We're updating the server in 1 minutes, so get to a safe spot!"));
+							setTimeout(function()
+							{
+								ws.send(createPacket("global.kickall (Updating/Restarting)"));
+								setTimeout(function()
+								{
+									ws.send(createPacket("quit"));
+									//ws.send(createPacket("restart 60")); // NOTE: Don't use restart, because that doesn't actually restart the container!
+									setTimeout(function()
+									{
+										ws.close(1000);
 
-							var child_process = require('child_process');
-							child_process.execSync('kill -s 2 $(pidof bash)');
-						}, 1000 * 60 * 2);
-					}, 1000);
-				}, 1000);
-			}, 1000 * 60 * 5);
+										// After 2 minutes, if the server's still running, forcibly shut it down
+										setTimeout(function()
+										{
+											var fs = require('fs');
+											fs.unlinkSync('/tmp/restart_app.lock');
+
+											var child_process = require('child_process');
+											child_process.execSync('kill -s 2 $(pidof bash)');
+										}, 1000 * 60 * 2);
+									}, 1000);
+								}, 1000);
+							}, 1000 * 60);
+						}, 1000 * 60);
+					}, 1000 * 60);
+				}, 1000 * 60);
+			}, 1000 * 60);
 		}, 1000);
 	});
 }
