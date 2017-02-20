@@ -109,7 +109,7 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# If necessary, download and install latest Oxide
 	if [ "$INSTALL_OXIDE" = "1" ]; then
 		echo "Downloading and installing latest Oxide.."
-		curl -sL https://github.com/OxideMod/Snapshots/raw/master/Oxide-Rust.zip | bsdtar -xvf- -C /steamcmd/rust/
+		curl -sL https://dl.bintray.com/oxidemod/Oxide/Oxide-Rust.zip | bsdtar -xvf- -C /steamcmd/rust/
 		chmod +x /steamcmd/rust/CSharpCompiler && chmod +x /steamcmd/rust/CSharpCompiler.x86
 		chown -R root:root /steamcmd/rust
 	fi
