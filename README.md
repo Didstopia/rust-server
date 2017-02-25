@@ -20,6 +20,7 @@ RUST_SERVER_IDENTITY (DEFAULT: "docker" - Mainly used for the name of the save d
 RUST_SERVER_SEED (DEFAULT: "12345" - The server map seed, must be an integer)
 RUST_SERVER_WORLDSIZE (DEFAULT: "4000" - The map size, must be an integer)
 RUST_SERVER_NAME (DEFAULT: "Rust Server [DOCKER]" - The publicly visible server name)
+RUST_SERVER_MAXPLAYERS (DEFAULT: "10" - Maximum players on the server, must be an integer)
 RUST_SERVER_DESCRIPTION (DEFAULT: "This is a Rust server running inside a Docker container!" - The publicly visible server description)
 RUST_SERVER_URL (DEFAULT: "https://hub.docker.com/r/didstopia/rust-server/" - The publicly visible server website)
 RUST_SERVER_BANNER_URL (DEFAULT: "" - The publicly visible server banner image URL)
