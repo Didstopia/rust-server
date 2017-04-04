@@ -1,5 +1,14 @@
 # Rust server that runs inside a Docker container
 
+---
+
+**DISCLAIMER:**
+```
+Cracked or pirated versions of Rust are not supported in any way, shape or form. Please do not post issues regarding these.
+```
+
+---
+
 [![Install on DigitalOcean](http://installer.71m.us/button.svg)](http://installer.71m.us/install?url=https://github.com/didstopia/rust-server)
 
 **TUTORIAL**: We've written a guide on how to use this image [here](http://rust.didscraft.com/rust-server-on-linux-using-docker/).
@@ -50,3 +59,4 @@ To use it, simply run the following on the host: `docker exec rust-server rcon s
 # Anything else
 
 If you need help, have questions or bug submissions, feel free to contact me **@Dids** on Twitter, and on the *Rust Server Owners* Slack community.
+
