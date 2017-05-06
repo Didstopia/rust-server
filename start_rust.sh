@@ -24,11 +24,14 @@ exit_handler()
 	
 	# Execute the RCON shutdown command
 	node /shutdown_app/app.js
-	sleep 1
+	sleep 5
+
+	pkill -f nginx
 
 	#kill -TERM "$child"
 
-	#exit
+	echo "Exiting.."
+	exit
 }
 
 # Trap specific signals and forward to the exit handler
@@ -138,7 +141,9 @@ if [ ! -z ${RUST_RCON_WEB+x} ]; then
 
 		# Start nginx (in the background)
 		echo "Starting web server.."
-		nginx && sleep 5
+		nginx
+		NGINX=$!
+		sleep 5
 		#nginx -g "daemon off;" && sleep 5 ## Used for debugging nginx
 	fi
 fi
@@ -214,3 +219,8 @@ fi
 
 child=$!
 wait "$child"
+
+pkill -f nginx
+
+echo "Exiting.."
+exit
