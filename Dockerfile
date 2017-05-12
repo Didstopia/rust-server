@@ -1,37 +1,18 @@
-FROM ubuntu:16.04
+FROM didstopia/base:nodejs-steamcmd-ubuntu-16.04
 
-MAINTAINER didstopia
+MAINTAINER Didstopia <support@didstopia.com>
 
-# Setup the locales
-RUN apt-get clean && apt-get update && apt-get install locales -y
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+# Fix apt-get warnings
+ARG DEBIAN_FRONTEND=noninteractive
 
-# Fixes apt-get warnings
-ENV DEBIAN_FRONTEND noninteractive
-
-# Run a quick apt-get update/upgrade
-RUN apt-get clean && apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y && apt-get autoremove -y
-
-# Install dependencies, mainly for SteamCMD
-RUN apt-get install -y \
-    ca-certificates \
-    software-properties-common \
-    python-software-properties \
-    lib32gcc1 \
-    libstdc++6 \
-    curl \
-    wget \
-    bsdtar \
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
     nginx \
-    build-essential \
     expect \
-    libgdiplus
-
-# Run as root
-USER root
+    tcl \
+    libgdiplus && \
+    rm -rf /var/lib/apt/lists/*
 
 # Remove default nginx stuff
 RUN rm -fr /usr/share/nginx/html/* && \
@@ -50,10 +31,6 @@ ADD fix_conn.sh /tmp/fix_conn.sh
 # Create and set the steamcmd folder as a volume
 RUN mkdir -p /steamcmd/rust
 VOLUME ["/steamcmd/rust"]
-
-# Install NodeJS (see below)
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-RUN apt-get install -y nodejs
 
 # Setup proper shutdown support
 ADD shutdown_app/ /shutdown_app/
@@ -85,6 +62,9 @@ ADD start_rust.sh /start.sh
 # Copy the Rust update check script
 ADD update_check.sh /update_check.sh
 
+# Copy extra files
+COPY README.md LICENSE.md /
+
 # Set the current working directory
 WORKDIR /
 
@@ -112,9 +92,6 @@ ENV RUST_OXIDE_UPDATE_ON_BOOT "1"
 ENV RUST_SERVER_WORLDSIZE "3500"
 ENV RUST_SERVER_MAXPLAYERS "500"
 ENV RUST_SERVER_SAVE_INTERVAL "600"
-
-# Cleanup
-ENV DEBIAN_FRONTEND newt
 
 # Start the server
 ENTRYPOINT ["./start.sh"]
