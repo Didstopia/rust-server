@@ -7,12 +7,12 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    nginx \
-    expect \
-    tcl \
-    libgdiplus && \
-    rm -rf /var/lib/apt/lists/*
+	apt-get install -y --no-install-recommends \
+	nginx \
+	expect \
+	tcl \
+	libgdiplus && \
+	rm -rf /var/lib/apt/lists/*
 
 # Remove default nginx stuff
 RUN rm -fr /usr/share/nginx/html/* && \
@@ -70,7 +70,7 @@ WORKDIR /
 
 # Expose necessary ports
 EXPOSE 8080
-EXPOSE 28015
+EXPOSE 28015/udp
 EXPOSE 28016
 
 # Setup default environment variables for the server
