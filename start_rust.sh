@@ -64,24 +64,26 @@ if [ "$RUST_START_MODE" = "2" ]; then
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
 		# Install Rust from install.txt
 		echo "Installing Rust.. (this might take a while, be patient)"
-		STEAMCMD_OUTPUT=$(bash /steamcmd/steamcmd.sh +runscript /install.txt | tee /dev/stdout)
-		STEAMCMD_ERROR=$(echo $STEAMCMD_OUTPUT | grep -q 'Error')
-		if [ ! -z "$STEAMCMD_ERROR" ]; then
-			echo "Exiting, steamcmd install or update failed: $STEAMCMD_ERROR"
-			exit
-		fi
+		bash /steamcmd/steamcmd.sh +runscript /install.txt
+		#STEAMCMD_OUTPUT=$(bash /steamcmd/steamcmd.sh +runscript /install.txt | tee /dev/stdout)
+		#STEAMCMD_ERROR=$(echo $STEAMCMD_OUTPUT | grep -q 'Error')
+		#if [ ! -z "$STEAMCMD_ERROR" ]; then
+		#	echo "Exiting, steamcmd install or update failed: $STEAMCMD_ERROR"
+		#	exit
+		#fi
 	else
 		echo "Rust seems to be installed, skipping automatic update.."
 	fi
 else
 	# Install/update Rust from install.txt
 	echo "Installing/updating Rust.. (this might take a while, be patient)"
-	STEAMCMD_OUTPUT=$(bash /steamcmd/steamcmd.sh +runscript /install.txt | tee /dev/stdout)
-	STEAMCMD_ERROR=$(echo $STEAMCMD_OUTPUT | grep -q 'Error')
-	if [ ! -z "$STEAMCMD_ERROR" ]; then
-		echo "Exiting, steamcmd install or update failed: $STEAMCMD_ERROR"
-		exit
-	fi
+	bash /steamcmd/steamcmd.sh +runscript /install.txt
+	#STEAMCMD_OUTPUT=$(bash /steamcmd/steamcmd.sh +runscript /install.txt | tee /dev/stdout)
+	#STEAMCMD_ERROR=$(echo $STEAMCMD_OUTPUT | grep -q 'Error')
+	#if [ ! -z "$STEAMCMD_ERROR" ]; then
+	#	echo "Exiting, steamcmd install or update failed: $STEAMCMD_ERROR"
+	#	exit
+	#fi
 
 	# Run the update check if it's not been run before
 	if [ ! -f "/steamcmd/rust/build.id" ]; then
@@ -114,7 +116,7 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 		echo "Downloading and installing latest Oxide.."
 		curl -sL https://github.com/OxideMod/Oxide/releases/download/latest/Oxide-Rust.zip | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/CSharpCompiler*
-		chown -R root:root /steamcmd/rust
+		chown -R $PUID:$PGID /steamcmd/rust
 	fi
 fi
 
