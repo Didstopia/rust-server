@@ -116,7 +116,9 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 		echo "Downloading and installing latest Oxide.."
 		curl -sL https://github.com/OxideMod/Oxide/releases/download/latest/Oxide-Rust.zip | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/CSharpCompiler*
-		chown -R $PUID:$PGID /steamcmd/rust
+		
+		## NOTE: Disabled until I have time to properly fix this
+		#chown -R $PUID:$PGID /steamcmd/rust
 	fi
 fi
 
