@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 # Define the exit handler
 exit_handler()
 {
@@ -104,7 +106,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/rust/RustDedicated_Data/Plugin
 if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# Next check if Oxide doesn't' exist, or if we want to always update it
 	INSTALL_OXIDE="0"
-	if [ ! -f "/steamcmd/rust/CSharpCompiler" ]; then
+	if [ ! -f "/steamcmd/rust/CSharpCompiler.x86_x64" ]; then
 		INSTALL_OXIDE="1"
 	fi
 	if [ "$RUST_OXIDE_UPDATE_ON_BOOT" = "1" ]; then
@@ -114,8 +116,9 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# If necessary, download and install latest Oxide
 	if [ "$INSTALL_OXIDE" = "1" ]; then
 		echo "Downloading and installing latest Oxide.."
-		curl -sL https://github.com/OxideMod/Oxide/releases/download/latest/Oxide-Rust.zip | bsdtar -xvf- -C /steamcmd/rust/
-		chmod 755 /steamcmd/rust/CSharpCompiler*
+		OXIDE_URL=$(curl -s https://api.github.com/repos/OxideMod/Oxide.Rust/releases/latest | grep browser_download_url | cut -d '"' -f 4)
+		curl -sL $OXIDE_URL | bsdtar -xvf- -C /steamcmd/rust/
+		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 2>&1 /dev/null
 		
 		## NOTE: Disabled until I have time to properly fix this
 		#chown -R $PUID:$PGID /steamcmd/rust
