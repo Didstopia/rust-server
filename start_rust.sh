@@ -46,6 +46,14 @@ if [ ! -d "/steamcmd/rust" ]; then
 	mkdir -p /steamcmd/rust
 fi
 
+
+echo "" > install.txt
+echo "@sSteamCmdForcePlatformType linux" >> install.txt
+echo "login $STEAMID" >> install.txt
+echo "force_install_dir /steamcmd/rust" >> install.txt
+echo "app_info_update 1" >> install.txt
+echo "app_update 258550 validate" >> install.txt
+
 # Install/update steamcmd
 echo "Installing/updating steamcmd.."
 curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
