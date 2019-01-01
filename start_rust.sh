@@ -4,30 +4,15 @@
 exit_handler()
 {
 	echo "Shutdown signal received"
-
-	# Only do backups if we're using the seed override
-	if [ -f "/steamcmd/rust/seed_override" ]; then
-		# Create the backup directory if it doesn't exist
-		if [ ! -d "/steamcmd/rust/bak" ]; then
-			mkdir -p /steamcmd/rust/bak
-		fi
-		if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence.db" ]; then
-			# Backup all the current unlocked blueprint data
-			cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/UserPersistence*.db" "/steamcmd/rust/bak/"
-		fi
-
-		if [ -f "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp.db" ]; then
-			# Backup all the current XP data
-			cp -fr "/steamcmd/rust/server/$RUST_SERVER_IDENTITY/xp*.db" "/steamcmd/rust/bak/"
-		fi
-	fi
 	
 	# Execute the RCON shutdown command
 	node /shutdown_app/app.js
-	sleep 5
+	#sleep 5
 
+	# Stop the web server
 	pkill -f nginx
 
+	# Forcefully terminate Rust
 	#kill -TERM "$child"
 
 	echo "Exiting.."
@@ -37,14 +22,35 @@ exit_handler()
 # Trap specific signals and forward to the exit handler
 trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 
-# Remove old locks
+# Define the install/update function
+install_or_update()
+{
+	# Install Rust from install.txt
+	echo "Installing or updating Rust.. (this might take a while, be patient)"
+	bash /steamcmd/steamcmd.sh +runscript /install.txt
+
+	# Terminate if exit code wasn't zero
+	if [ $? -ne 0 ]; then
+		echo "Exiting, steamcmd install or update failed!"
+		exit 1
+	fi
+}
+
+# Remove old lock files (used by restart_app/ and update_check.sh)
 rm -fr /tmp/*.lock
 
 # Create the necessary folder structure
 if [ ! -d "/steamcmd/rust" ]; then
-	echo "Creating folder structure.."
+	echo "Missing /steamcmd/rust, creating.."
 	mkdir -p /steamcmd/rust
 fi
+if [ ! -d "/steamcmd/rust/server/${RUST_SERVER_IDENTITY}" ]; then
+	echo "Missing /steamcmd/rust/server/${RUST_SERVER_IDENTITY}, creating.."
+	mkdir -p "/steamcmd/rust/server/${RUST_SERVER_IDENTITY}"
+fi
+
+# Fix ownership
+chown -R $(whoami):$(whoami) /steamcmd/rust
 
 # Install/update steamcmd
 echo "Installing/updating steamcmd.."
@@ -62,28 +68,12 @@ fi
 if [ "$RUST_START_MODE" = "2" ]; then
 	# Check that Rust exists in the first place
 	if [ ! -f "/steamcmd/rust/RustDedicated" ]; then
-		# Install Rust from install.txt
-		echo "Installing Rust.. (this might take a while, be patient)"
-		bash /steamcmd/steamcmd.sh +runscript /install.txt
-		#STEAMCMD_OUTPUT=$(bash /steamcmd/steamcmd.sh +runscript /install.txt | tee /dev/stdout)
-		#STEAMCMD_ERROR=$(echo $STEAMCMD_OUTPUT | grep -q 'Error')
-		#if [ ! -z "$STEAMCMD_ERROR" ]; then
-		#	echo "Exiting, steamcmd install or update failed: $STEAMCMD_ERROR"
-		#	exit
-		#fi
+		install_or_update
 	else
 		echo "Rust seems to be installed, skipping automatic update.."
 	fi
 else
-	# Install/update Rust from install.txt
-	echo "Installing/updating Rust.. (this might take a while, be patient)"
-	bash /steamcmd/steamcmd.sh +runscript /install.txt
-	#STEAMCMD_OUTPUT=$(bash /steamcmd/steamcmd.sh +runscript /install.txt | tee /dev/stdout)
-	#STEAMCMD_ERROR=$(echo $STEAMCMD_OUTPUT | grep -q 'Error')
-	#if [ ! -z "$STEAMCMD_ERROR" ]; then
-	#	echo "Exiting, steamcmd install or update failed: $STEAMCMD_ERROR"
-	#	exit
-	#fi
+	install_or_update
 
 	# Run the update check if it's not been run before
 	if [ ! -f "/steamcmd/rust/build.id" ]; then
@@ -153,30 +143,6 @@ if [ ! -z ${RUST_RCON_WEB+x} ]; then
 	fi
 fi
 
-# Check if a special seed override file exists
-if [ -f "/steamcmd/rust/seed_override" ]; then
-	RUST_SEED_OVERRIDE=`cat /steamcmd/rust/seed_override`
-	echo "Found seed override: $RUST_SEED_OVERRIDE"
-
-	# Modify the server identity to include the override seed
-	RUST_SERVER_IDENTITY=$RUST_SEED_OVERRIDE
-	RUST_SERVER_SEED=$RUST_SEED_OVERRIDE
-
-	# Prepare the identity directory (if it doesn't exist)
-	if [ ! -d "/steamcmd/rust/server/$RUST_SEED_OVERRIDE" ]; then
-		echo "Creating seed override identity directory.."
-		mkdir -p "/steamcmd/rust/server/$RUST_SEED_OVERRIDE"
-		if [ -f "/steamcmd/rust/UserPersistence.db.bak" ]; then
-			echo "Copying blueprint backup in place.."
-			cp -fr "/steamcmd/rust/UserPersistence.db.bak" "/steamcmd/rust/server/$RUST_SEED_OVERRIDE/UserPersistence.db"
-		fi
-		if [ -f "/steamcmd/rust/xp.db.bak" ]; then
-			echo "Copying blueprint backup in place.."
-			cp -fr "/steamcmd/rust/xp.db.bak" "/steamcmd/rust/server/$RUST_SEED_OVERRIDE/xp.db"
-		fi
-	fi
-fi
-
 ## Disable logrotate if "-logfile" is set in $RUST_STARTUP_COMMAND
 LOGROTATE_ENABLED=1
 RUST_STARTUP_COMMAND_LOWERCASE=`echo "$RUST_STARTUP_COMMAND" | sed 's/./\L&/g'`
@@ -202,7 +168,7 @@ if [ "$LOGROTATE_ENABLED" = "1" ]; then
 
 	# Archive old logs
 	echo "Cleaning up old logs.."
-	mv /steamcmd/rust/logs/*.txt /steamcmd/rust/logs/archive
+	mv /steamcmd/rust/logs/*.txt /steamcmd/rust/logs/archive | true
 else
 	echo "Log rotation disabled!"
 fi
@@ -217,9 +183,9 @@ cd /steamcmd/rust
 # Run the server
 echo "Starting Rust.."
 if [ "$LOGROTATE_ENABLED" = "1" ]; then
-	unbuffer /steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL" 2>&1 | grep --line-buffered -Ev '^\s*$|Filename' | tee $RUST_SERVER_LOG_FILE &
+	unbuffer /steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED" +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL" 2>&1 | grep --line-buffered -Ev '^\s*$|Filename' | tee $RUST_SERVER_LOG_FILE &
 else
-	/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED"  +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL"  2>&1 &
+	/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED" +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL" 2>&1 &
 fi
 
 child=$!
