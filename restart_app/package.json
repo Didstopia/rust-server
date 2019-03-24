@@ -10,6 +10,6 @@
   "private": "true",
   "dependencies": {
     "request": "^2.88.0",
-    "ws": "^6.1.2"
+    "ws": "^6.1.3"
   }
 }

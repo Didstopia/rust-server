@@ -4,8 +4,8 @@ set -m
 
 # Use a lock file to determine if we're already checking for updates
 if ! mkdir /tmp/update_check.lock; then
-    printf "Failed to aquire lock.\n" >&2
-    exit 1
+	echo "Failed to acquire lock"
+	exit 1
 fi
 trap 'rm -rf /tmp/update_check.lock' EXIT  # remove the lockdir on exit
 
@@ -20,7 +20,7 @@ trap 'rm -rf /tmp/update_check.lock' EXIT  # remove the lockdir on exit
 if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	echo "Checking Steam for updates.."
 else
-	exit
+	exit 0
 fi
 
 # Get the old build id (default to 0)
@@ -71,7 +71,7 @@ if [ "$OLD_BUILDID" = "$NEW_BUILDID" ]; then
 else
 	# Use a lock file to determine if we're already checking for updates
 	if ! mkdir /tmp/restart_app.lock; then
-	    printf "Failed to aquire lock.\n" >&2
+	    echo "Failed to acquire lock"
 	    exit 1
 	fi
 	

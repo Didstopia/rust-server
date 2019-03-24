@@ -15,7 +15,7 @@ if (debug) {
 
 // Timeout after 30 minutes and restart
 setTimeout(function () {
-  console.log('Timeout exceeded, forcing a restart')
+  console.log('RestartApp::Timeout exceeded, forcing a restart')
   restart()
 }, timeout)
 
@@ -24,25 +24,25 @@ checkForClientUpdate()
 
 function checkForClientUpdate () {
   if (isRestarting) {
-    if (debug) console.log("We're restarting, skipping client update check..")
+    if (debug) console.log("RestartApp::We're restarting, skipping client update check..")
     return
   }
 
-  console.log('Checking if a client update is available..')
+  console.log('RestartApp::Checking if a client update is available..')
   request({ url: 'https://whenisupdate.com/api.json', headers: { Referer: 'rust-docker-server' }, timeout: 10000 }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
       var info = JSON.parse(body)
       var latest = info.latest
       if (latest !== undefined && latest.length > 0) {
         if (latest >= now) {
-          console.log('Client update is out, forcing a restart')
+          console.log('RestartApp::Client update is out, forcing a restart')
           restart()
           return
         }
       }
-      if (debug) console.log('Client update not out yet..')
+      if (debug) console.log('RestartApp::Client update not out yet..')
     } else if (debug) {
-      console.log('Error: ' + error)
+      console.log('RestartApp::Error: ' + error)
     }
 
     // Keep checking for client updates every 5 minutes
@@ -53,9 +53,9 @@ function checkForClientUpdate () {
 }
 
 function restart () {
-  if (debug) console.log('Restarting..')
+  if (debug) console.log('RestartApp::Restarting..')
   if (isRestarting) {
-    if (debug) console.log("We're already restarting..")
+    if (debug) console.log("RestartApp::We're already restarting..")
     return
   }
   isRestarting = true

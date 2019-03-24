@@ -8,11 +8,11 @@ for (var i = 0; i < args.length; i++) {
 }
 
 if (argumentString.length < 1) {
-  console.log('Error: Please specify an RCON command')
+  console.log('RconApp::Error: Please specify an RCON command')
   process.exit()
 }
 
-// console.log("Relaying RCON command: " + argumentString);
+console.log('RconApp::Relaying RCON command: ' + argumentString)
 
 var serverHostname = 'localhost'
 var serverPort = process.env.RUST_RCON_PORT
@@ -28,7 +28,7 @@ ws.on('open', function open () {
     setTimeout(function () {
       ws.close(1000)
       setTimeout(function () {
-        // console.log("Command relayed");
+        console.log('RconApp::Command relayed')
         process.exit()
       })
     }, 1000)
@@ -40,15 +40,15 @@ ws.on('message', function (data, flags) {
     var json = JSON.parse(data)
     if (json !== undefined) {
       if (json.Message !== undefined && json.Message.length > 0) {
-        console.log(json.Message)
+        console.log('RconApp::Received message:', json.Message)
       }
-    } else console.log('Error: Invalid JSON received')
+    } else console.log('RconApp::Error: Invalid JSON received')
   } catch (e) {
-    if (e) console.log(e)
+    if (e) console.log('RconApp::Error:', e)
   }
 })
 ws.on('error', function (e) {
-  console.log(e)
+  console.log('RconApp::Error:', e)
   process.exit()
 })
 

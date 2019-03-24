@@ -19,11 +19,11 @@ setTimeout(function () {
 
 function checkForUpdates () {
   setTimeout(function () {
-    if (debug) console.log('Running bash /update_check.sh')
+    if (debug) console.log('SchedulerApp::Running bash /update_check.sh')
     childProcess.exec('bash /update_check.sh', { env: process.env }, function (err, stdout, stderr) {
-      if (debug) console.log('bash /update_check.sh STDOUT: ' + stdout)
-      if (debug && err) console.log('bash /update_check.sh ERR: ' + err)
-      if (debug && stderr) console.log('bash /update_check.sh STDERR: ' + stderr)
+      if (debug) console.log('SchedulerApp::bash /update_check.sh STDOUT: ' + stdout)
+      if (debug && err) console.log('SchedulerApp::bash /update_check.sh ERR: ' + err)
+      if (debug && stderr) console.log('SchedulerApp::bash /update_check.sh STDERR: ' + stderr)
       checkForUpdates()
     })
   }, 1000 * runIntervalInSeconds)

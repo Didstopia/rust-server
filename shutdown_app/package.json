@@ -9,6 +9,6 @@
   "author": "",
   "private": "true",
   "dependencies": {
-    "ws": "^6.1.2"
+    "ws": "^6.1.3"
   }
 }

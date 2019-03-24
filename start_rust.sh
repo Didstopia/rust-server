@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Enable debugging
+set -x
+
 # Define the exit handler
 exit_handler()
 {
@@ -20,7 +23,8 @@ exit_handler()
 }
 
 # Trap specific signals and forward to the exit handler
-trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
+#trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
+trap 'exit_handler' SIGINT SIGTERM
 
 # Define the install/update function
 install_or_update()
@@ -173,9 +177,11 @@ else
 	echo "Log rotation disabled!"
 fi
 
-# Start cron
-echo "Starting scheduled task manager.."
-node /scheduler_app/app.js &
+# Start the scheduler (only if update checking is enabled)
+if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
+	echo "Starting scheduled task manager.."
+	node /scheduler_app/app.js &
+fi
 
 # Set the working directory
 cd /steamcmd/rust
