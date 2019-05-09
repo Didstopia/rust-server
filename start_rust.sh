@@ -7,7 +7,7 @@ set -x
 exit_handler()
 {
 	echo "Shutdown signal received"
-	
+
 	# Execute the RCON shutdown command
 	node /shutdown_app/app.js
 	#sleep 5
@@ -63,7 +63,13 @@ curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -
 # Check which branch to use
 if [ ! -z ${RUST_BRANCH+x} ]; then
 	echo "Using branch arguments: $RUST_BRANCH"
-	sed -i "s/app_update 258550.*validate/app_update 258550 $RUST_BRANCH validate/g" /install.txt
+
+	# Add "-beta" if necessary
+	INSTALL_BRANCH="${RUST_BRANCH}"
+	if [ ! "$RUST_BRANCH" == "public" ]; then
+	    INSTALL_BRANCH="-beta ${RUST_BRANCH}"
+	fi
+	sed -i "s/app_update 258550.*validate/app_update 258550 $INSTALL_BRANCH validate/g" /install.txt
 else
 	sed -i "s/app_update 258550.*validate/app_update 258550 validate/g" /install.txt
 fi
@@ -111,7 +117,7 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 		OXIDE_URL=$(curl -sL https://api.github.com/repos/theumod/uMod.Rust/releases/latest | grep browser_download_url | cut -d '"' -f 4)
 		curl -sL $OXIDE_URL | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 2>&1 /dev/null
-		
+
 		## NOTE: Disabled until I have time to properly fix this
 		#chown -R $PUID:$PGID /steamcmd/rust
 	fi
