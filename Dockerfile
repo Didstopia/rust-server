@@ -1,4 +1,4 @@
-FROM didstopia/base:nodejs-steamcmd-ubuntu-16.04
+FROM didstopia/base:nodejs-12-steamcmd-ubuntu-16.04
 
 MAINTAINER Didstopia <support@didstopia.com>
 
@@ -8,10 +8,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    nginx \
-    expect \
-    tcl \
-    libgdiplus && \
+        nginx \
+        expect \
+        tcl \
+        libgdiplus && \
     rm -rf /var/lib/apt/lists/*
 
 # Remove default nginx stuff
@@ -68,6 +68,10 @@ COPY README.md LICENSE.md /
 # Set the current working directory
 WORKDIR /
 
+# Run as root by default
+ENV PGID 0
+ENV PUID 0
+
 # Expose necessary ports
 EXPOSE 8080
 EXPOSE 28015
@@ -89,7 +93,7 @@ ENV RUST_UPDATE_BRANCH "public"
 ENV RUST_START_MODE "0"
 ENV RUST_OXIDE_ENABLED "0"
 ENV RUST_OXIDE_UPDATE_ON_BOOT "1"
-ENV RUST_SERVER_WORLDSIZE "4000"
+ENV RUST_SERVER_WORLDSIZE "3500"
 ENV RUST_SERVER_MAXPLAYERS "500"
 ENV RUST_SERVER_SAVE_INTERVAL "600"
 
