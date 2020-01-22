@@ -29,9 +29,6 @@ trap 'exit_handler' SIGINT SIGTERM
 # Rust includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/steamcmd/rust/RustDedicated_Data/Plugins/x86_64
 
-# Fix issues with libcurl
-#export LD_PRELOAD=$LD_PRELOAD:/usr/lib/libcurl.so
-
 # Define the install/update function
 install_or_update()
 {
