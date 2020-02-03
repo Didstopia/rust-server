@@ -36,8 +36,11 @@ if [ "$STRING_SIZE" -lt "1" ]; then
 fi
 
 # Remove the old cached app info if it exists
-if [ -f "/root/Steam/appcache/appinfo.vdf" ]; then
-	rm -fr /root/Steam/appcache/appinfo.vdf
+# if [ -f "/root/Steam/appcache/appinfo.vdf" ]; then
+# 	rm -fr /root/Steam/appcache/appinfo.vdf
+# fi
+if [ -f "/app/Steam/appcache/appinfo.vdf" ]; then
+	rm -fr /app/Steam/appcache/appinfo.vdf
 fi
 
 # Get the new build id directly from Steam
@@ -77,7 +80,7 @@ else
 	
 	echo "Latest server build id ($NEW_BUILDID) is newer than the current one ($OLD_BUILDID), waiting for client update.."
 	echo $NEW_BUILDID > /steamcmd/rust/build.id
-	exec node /restart_app/app.js
+	exec node /app/restart_app/app.js
 	child=$!
 	wait "$child"
 fi

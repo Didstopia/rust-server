@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 # Enable debugging
-set -x
+#set -x
+
+# Print the user we're currently running as
+echo "Running as user: $(whoami)"
 
 # Define the exit handler
 exit_handler()
@@ -9,21 +12,18 @@ exit_handler()
 	echo "Shutdown signal received"
 
 	# Execute the RCON shutdown command
-	node /shutdown_app/app.js
-	#sleep 5
+	node /app/shutdown_app/app.js
+	killer=$!
+	wait "$killer"
 
 	# Stop the web server
 	pkill -f nginx
-
-	# Forcefully terminate Rust
-	#kill -TERM "$child"
 
 	echo "Exiting.."
 	exit
 }
 
 # Trap specific signals and forward to the exit handler
-#trap 'exit_handler' SIGHUP SIGINT SIGQUIT SIGTERM
 trap 'exit_handler' SIGINT SIGTERM
 
 # Rust includes a 64-bit version of steamclient.so, so we need to tell the OS where it exists
@@ -34,7 +34,7 @@ install_or_update()
 {
 	# Install Rust from install.txt
 	echo "Installing or updating Rust.. (this might take a while, be patient)"
-	bash /steamcmd/steamcmd.sh +runscript /install.txt
+	bash /steamcmd/steamcmd.sh +runscript /app/install.txt
 
 	# Terminate if exit code wasn't zero
 	if [ $? -ne 0 ]; then
@@ -61,7 +61,7 @@ chown -R $(whoami):$(whoami) /steamcmd/rust
 
 # Install/update steamcmd
 echo "Installing/updating steamcmd.."
-curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -v -C /steamcmd -zx
+curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | bsdtar -xvf- -C /steamcmd
 
 # Check which branch to use
 if [ ! -z ${RUST_BRANCH+x} ]; then
@@ -72,9 +72,9 @@ if [ ! -z ${RUST_BRANCH+x} ]; then
 	if [ ! "$RUST_BRANCH" == "public" ]; then
 	    INSTALL_BRANCH="-beta ${RUST_BRANCH}"
 	fi
-	sed -i "s/app_update 258550.*validate/app_update 258550 $INSTALL_BRANCH validate/g" /install.txt
+	sed -i "s/app_update 258550.*validate/app_update 258550 $INSTALL_BRANCH validate/g" /app/install.txt
 else
-	sed -i "s/app_update 258550.*validate/app_update 258550 validate/g" /install.txt
+	sed -i "s/app_update 258550.*validate/app_update 258550 validate/g" /app/install.txt
 fi
 
 # Disable auto-update if start mode is 2
@@ -90,12 +90,12 @@ else
 
 	# Run the update check if it's not been run before
 	if [ ! -f "/steamcmd/rust/build.id" ]; then
-		./update_check.sh
+		./app/update_check.sh
 	else
 		OLD_BUILDID="$(cat /steamcmd/rust/build.id)"
 		STRING_SIZE=${#OLD_BUILDID}
 		if [ "$STRING_SIZE" -lt "6" ]; then
-			./update_check.sh
+			./app/update_check.sh
 		fi
 	fi
 fi
@@ -117,9 +117,6 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 		OXIDE_URL="https://umod.org/games/rust/download/develop"
 		curl -sL $OXIDE_URL | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 2>&1 /dev/null
-
-		## NOTE: Disabled until I have time to properly fix this
-		#chown -R $PUID:$PGID /steamcmd/rust
 	fi
 fi
 
@@ -149,7 +146,6 @@ if [ ! -z ${RUST_RCON_WEB+x} ]; then
 		nginx
 		NGINX=$!
 		sleep 5
-		#nginx -g "daemon off;" && sleep 5 ## Used for debugging nginx
 	fi
 fi
 
@@ -186,7 +182,7 @@ fi
 # Start the scheduler (only if update checking is enabled)
 if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	echo "Starting scheduled task manager.."
-	node /scheduler_app/app.js &
+	node /app/scheduler_app/app.js &
 fi
 
 # Set the working directory
