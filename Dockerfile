@@ -29,7 +29,7 @@ RUN curl -sL https://github.com/Facepunch/webrcon/archive/24b0898d86706723d52bb4
 ADD fix_conn.sh /tmp/fix_conn.sh
 
 # Create the volume directories
-RUN mkdir -p /steamcmd/rust
+RUN mkdir -p /steamcmd/rust /usr/share/nginx/html /var/log/nginx
 
 # Setup proper shutdown support
 ADD shutdown_app/ /app/shutdown_app/
@@ -70,7 +70,9 @@ WORKDIR /
 # Fix permissions
 RUN chown -R 1000:1000 \
     /steamcmd \
-    /app
+    /app \
+    /usr/share/nginx/html \
+    /var/log/nginx
 
 # Run as a non-root user by default
 ENV PGID 1000
