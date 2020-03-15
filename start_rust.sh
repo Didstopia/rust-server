@@ -57,7 +57,7 @@ if [ ! -d "/steamcmd/rust/server/${RUST_SERVER_IDENTITY}" ]; then
 fi
 
 # Fix ownership
-chown -R $(whoami):$(whoami) /steamcmd/rust
+chown -R $(PUID):$(PGID) /steamcmd/rust /app /usr/share/nginx/html /var/log/nginx
 
 # Install/update steamcmd
 echo "Installing/updating steamcmd.."
