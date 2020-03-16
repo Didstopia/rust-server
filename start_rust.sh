@@ -56,9 +56,6 @@ if [ ! -d "/steamcmd/rust/server/${RUST_SERVER_IDENTITY}" ]; then
 	mkdir -p "/steamcmd/rust/server/${RUST_SERVER_IDENTITY}"
 fi
 
-# Fix ownership
-chown -R $(PUID):$(PGID) /steamcmd/rust /app /usr/share/nginx/html /var/log/nginx
-
 # Install/update steamcmd
 echo "Installing/updating steamcmd.."
 curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | bsdtar -xvf- -C /steamcmd
@@ -116,7 +113,7 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 		echo "Downloading and installing latest Oxide.."
 		OXIDE_URL="https://umod.org/games/rust/download/develop"
 		curl -sL $OXIDE_URL | bsdtar -xvf- -C /steamcmd/rust/
-		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 2>&1 /dev/null
+		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 > /dev/null 2>&1 &
 	fi
 fi
 
@@ -126,8 +123,10 @@ if [ "$RUST_START_MODE" = "1" ]; then
 	exit
 fi
 
+# Remove extra whitespace from startup command
+RUST_STARTUP_COMMAND=$(echo "$RUST_SERVER_STARTUP_ARGUMENTS" | tr -s " ")
+
 # Add RCON support if necessary
-RUST_STARTUP_COMMAND=$RUST_SERVER_STARTUP_ARGUMENTS
 if [ ! -z ${RUST_RCON_PORT+x} ]; then
 	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.port $RUST_RCON_PORT"
 fi
@@ -149,7 +148,7 @@ if [ ! -z ${RUST_RCON_WEB+x} ]; then
 	fi
 fi
 
-## Disable logrotate if "-logfile" is set in $RUST_STARTUP_COMMAND
+# Disable logrotate if "-logfile" is set in $RUST_STARTUP_COMMAND
 LOGROTATE_ENABLED=1
 RUST_STARTUP_COMMAND_LOWERCASE=`echo "$RUST_STARTUP_COMMAND" | sed 's/./\L&/g'`
 if [[ $RUST_STARTUP_COMMAND_LOWERCASE == *" -logfile "* ]]; then
@@ -179,6 +178,13 @@ else
 	echo "Log rotation disabled!"
 fi
 
+# Disable logging to stdout/stderr if "-logfile /dev/" is used
+STDLOG_ENABLED=1
+if [[ $RUST_STARTUP_COMMAND_LOWERCASE == *" -logfile /dev/"* ]]; then
+	echo "Disabling internal stdout/stderr logging!"
+	STDLOG_ENABLED=0
+fi
+
 # Start the scheduler (only if update checking is enabled)
 if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	echo "Starting scheduled task manager.."
@@ -192,8 +198,10 @@ cd /steamcmd/rust
 echo "Starting Rust.."
 if [ "$LOGROTATE_ENABLED" = "1" ]; then
 	unbuffer /steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED" +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL" 2>&1 | grep --line-buffered -Ev '^\s*$|Filename' | tee $RUST_SERVER_LOG_FILE &
-else
+elif [ "$STDLOG_ENABLED" = "1" ]; then
 	/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED" +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL" 2>&1 &
+else
+	/steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND +server.identity "$RUST_SERVER_IDENTITY" +server.seed "$RUST_SERVER_SEED" +server.hostname "$RUST_SERVER_NAME" +server.url "$RUST_SERVER_URL" +server.headerimage "$RUST_SERVER_BANNER_URL" +server.description "$RUST_SERVER_DESCRIPTION" +server.worldsize "$RUST_SERVER_WORLDSIZE" +server.maxplayers "$RUST_SERVER_MAXPLAYERS" +server.saveinterval "$RUST_SERVER_SAVE_INTERVAL" &
 fi
 
 child=$!
