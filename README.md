@@ -60,6 +60,11 @@ When the server starts up or restarts, it will move old logs to `logs/archive/`.
 We recently added a small application, called *rcon*, that can both send and receive messages to the server, much like the console on the Windows version, but this happens to use RCON (webrcon).
 To use it, simply run the following on the host: `docker exec rust-server rcon say Hello World`, substituting *rust-server* for your own container name.
 
+# Troubleshooting
+
+  - If the server exits by itself after seemingly starting up fine, make sure the Docker VM has at least 4GB of RAM.
+  - If you can connect to the RCON web UI, but not the game itself, make sure you've exposed port 28015 as UDP, not TCP.
+
 # Anything else
 
 If you need help, have questions or bug submissions, feel free to contact me **@Dids** on Twitter, and on the *Rust Server Owners* Slack community.
