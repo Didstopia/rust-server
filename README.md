@@ -41,6 +41,7 @@ RUST_SERVER_SAVE_INTERVAL (DEFAULT: "600" - Amount of seconds between automatic 
 RUST_RCON_WEB (DEFAULT "1" - Set to 1 or 0 to enable or disable the web-based RCON server)
 RUST_RCON_PORT (DEFAULT: "28016" - RCON server port)
 RUST_RCON_PASSWORD (DEFAULT: "docker" - RCON server password, please change this!)
+RUST_APP_PORT (DEFAULT: "28082" - Rust+ companion app port)
 RUST_BRANCH (DEFAULT: Not set - Sets the branch argument to use, eg. set to "-beta prerelease" for the prerelease branch)
 RUST_UPDATE_CHECKING (DEFAULT: "0" - Set to 1 to enable fully automatic update checking, notifying players and restarting to install updates)
 RUST_UPDATE_BRANCH (DEFAULT: "public" - Set to match the branch that you want to use for updating, ie. "prerelease" or "public", but do not specify arguments like "-beta")
@@ -59,6 +60,12 @@ When the server starts up or restarts, it will move old logs to `logs/archive/`.
 
 We recently added a small application, called *rcon*, that can both send and receive messages to the server, much like the console on the Windows version, but this happens to use RCON (webrcon).
 To use it, simply run the following on the host: `docker exec rust-server rcon say Hello World`, substituting *rust-server* for your own container name.
+
+# Rust+ companion app support
+
+The image sets up `app.port` to `28082` by default, but you can optionally override this with the `RUST_APP_PORT` environment variable.  
+If you need to set additional options, such as `app.listenip` or `app.publicip`, you can supply these to `RUST_SERVER_STARTUP_ARGUMENTS` environment variable, but be careful to also include the default values.  
+More information on the Rust+ companion app integration can be found [here](https://wiki.facepunch.com/rust/rust-companion-server).
 
 # Anything else
 
