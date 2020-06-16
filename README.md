@@ -13,8 +13,6 @@ Cracked or pirated versions of Rust are not supported in any way, shape or form.
 
 ---
 
-[![Install on DigitalOcean](http://installer.71m.us/button.svg)](http://installer.71m.us/install?url=https://github.com/didstopia/rust-server)
-
 **TUTORIAL**: We've written a guide on how to use this image [here](http://rust.didscraft.com/rust-server-on-linux-using-docker/).
 
 **NOTE**: This image will install/update on startup. The path ```/steamcmd/rust``` can be mounted on the host for data persistence.
