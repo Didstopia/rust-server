@@ -67,7 +67,11 @@ The image sets up `app.port` to `28082` by default, but you can optionally overr
 If you need to set additional options, such as `app.listenip` or `app.publicip`, you can supply these to `RUST_SERVER_STARTUP_ARGUMENTS` environment variable, but be careful to also include the default values.  
 More information on the Rust+ companion app integration can be found [here](https://wiki.facepunch.com/rust/rust-companion-server).
 
+# Troubleshooting
+
+  - If the server exits by itself after seemingly starting up fine, make sure the Docker VM has at least 4GB of RAM.
+  - If you can connect to the RCON web UI, but not the game itself, make sure you've exposed port 28015 as UDP, not TCP.
+
 # Anything else
 
 If you need help, have questions or bug submissions, feel free to contact me **@Dids** on Twitter, and on the *Rust Server Owners* Slack community.
-
