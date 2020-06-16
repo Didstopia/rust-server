@@ -4,8 +4,6 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/didstopia/rust-server.svg)](https://hub.docker.com/r/didstopia/rust-server/)
 [![Docker stars](https://img.shields.io/docker/stars/didstopia/rust-server.svg)](https://hub.docker.com/r/didstopia/rust-server)
 
----
-
 **DISCLAIMER:**
 ```
 Cracked or pirated versions of Rust are not supported in any way, shape or form. Please do not post issues regarding these.
