@@ -1,0 +1,4 @@
+FROM didstopia/rust-server:latest
+
+## TODO: Pre-install the server and bundle it with the image
+RUN bash /steamcmd/steamcmd.sh +runscript /app/install.txt
