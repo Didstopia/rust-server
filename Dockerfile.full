@@ -1,4 +1,3 @@
 FROM didstopia/rust-server:latest
 
-## TODO: Pre-install the server and bundle it with the image
-RUN bash /steamcmd/steamcmd.sh +runscript /app/install.txt
+RUN bash -eo pipefail -c "/steamcmd/steamcmd.sh +runscript /app/install.txt"

@@ -110,7 +110,7 @@ ENV RUST_SERVER_SAVE_INTERVAL "600"
 ENV CHOWN_DIRS "/app,/steamcmd,/usr/share/nginx/html,/var/log/nginx"
 
 # Expose the volumes
-VOLUME [ "/steamcmd/rust" ]
+# VOLUME [ "/steamcmd/rust" ]
 
 # Start the server
 CMD [ "bash", "/app/start.sh"]
