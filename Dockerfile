@@ -11,6 +11,7 @@ RUN apt-get update && \
         nginx \
         expect \
         tcl \
+	libsdl2-2.0-0:i386 \
         libgdiplus && \
     rm -rf /var/lib/apt/lists/*
 
