@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Enable debugging
-#set -x
+# set -x
 
 # Print the user we're currently running as
 echo "Running as user: $(whoami)"
@@ -138,7 +138,7 @@ if [ ! -z ${RUST_RCON_WEB+x} ]; then
 	RUST_STARTUP_COMMAND="$RUST_STARTUP_COMMAND +rcon.web $RUST_RCON_WEB"
 	if [ "$RUST_RCON_WEB" = "1" ]; then
 		# Fix the webrcon (customizes a few elements)
-		bash /tmp/fix_conn.sh
+		bash -c "RUST_RCON_SECURE_WEBSOCKET=${RUST_RCON_SECURE_WEBSOCKET} /tmp/fix_conn.sh"
 
 		# Start nginx (in the background)
 		echo "Starting web server.."

@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Enable debugging
+# set -x
 
 # $scope.Address = $scope.Address.trim();
 
@@ -18,4 +21,15 @@ sed -i -e 's/'"$OLD_HELP_TEXT"'/'"$NEW_HELP_TEXT"'/g' /usr/share/nginx/html/html
 # Remove the address lines (14-19) if they exist
 if grep -q "ng-model=\"Address\"" /usr/share/nginx/html/html/connect.html; then
 	sed -i -e '14,19d' /usr/share/nginx/html/html/connect.html
+fi
+
+# Enable or disable secure websockets
+if [ "$RUST_RCON_SECURE_WEBSOCKET" = "1" ]; then
+  # Change "ws://" to "wss://" in /usr/share/nginx/html/js/rconService.js
+  echo "Enabling secure websockets!"
+  sed -i -e 's/ws:\/\//wss:\/\//g' /usr/share/nginx/html/js/rconService.js
+else
+  # Change "wss://" to "ws://" in /usr/share/nginx/html/js/rconService.js
+  echo "Disabling secure websockets!"
+  sed -i -e 's/wss:\/\//ws:\/\//g' /usr/share/nginx/html/js/rconService.js
 fi
