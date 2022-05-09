@@ -5,7 +5,7 @@ const query = require('source-server-query');
 const childProcess = require('child_process')
 
 var serverHostname = 'localhost';
-var serverPort = process.env.RUST_SERVER_PORT=28016;
+var serverPort = process.env.RUST_SERVER_PORT;
 var rconPort = process.env.RUST_RCON_PORT;
 var rconPassword = process.env.RUST_RCON_PASSWORD;
 
