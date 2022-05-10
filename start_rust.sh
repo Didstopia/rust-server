@@ -191,6 +191,12 @@ if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	node /app/scheduler_app/app.js &
 fi
 
+# Start the heartbeat(only if enabled)
+if [ "$RUST_HEARTBEAT" = "1" ]; then
+	echo "Starting heartbeat.."
+	node /app/heartbeat_app/app.js &
+fi
+
 # Set the working directory
 cd /steamcmd/rust
 
