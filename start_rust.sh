@@ -111,7 +111,7 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# If necessary, download and install latest Oxide
 	if [ "$INSTALL_OXIDE" = "1" ]; then
 		echo "Downloading and installing latest Oxide.."
-		OXIDE_URL="https://umod.org/games/rust/download/develop"
+		OXIDE_URL="https://github.com/OxideMod/Oxide.Rust/releases/download/2.0.5581/Oxide.Rust-linux.zip"
 		curl -sL $OXIDE_URL | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 > /dev/null 2>&1 &
 	fi
