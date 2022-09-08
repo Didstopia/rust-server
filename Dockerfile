@@ -84,12 +84,6 @@ RUN chown -R 1000:1000 \
 ENV PGID 1000
 ENV PUID 1000
 
-# Expose necessary ports
-EXPOSE 8080
-EXPOSE 28015
-EXPOSE 28016
-EXPOSE 28082
-
 # Setup default environment variables for the server
 ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load -nographics +server.secure 1"
 ENV RUST_SERVER_IDENTITY "docker"
