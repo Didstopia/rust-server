@@ -23,23 +23,23 @@ async function check_server () {
 	await query.info('127.0.0.1',serverPort, querytimeout).then((q) => { qo=q;  pass= true; } ).catch((error) => { return });
 	if (started) {
 		if (pass) {
-			if (debug) console.log(`Heatbeat::Running... (Players: ${qo.players})`)
+			if (debug) console.log(`Heartbeat::Running... (Players: ${qo.players})`)
 			failcount = 0;
 		} else {
-			if (debug) console.log("Heatbeat::Failed to respond...");
+			if (debug) console.log("Heartbeat::Failed to respond...");
 			failcount++;
 			if (failcount >= maxfails) {
-				if (debug) console.log("Heatbeat::Max Fails hit! Restarting...");
+				if (debug) console.log("Heartbeat::Max Fails hit! Restarting...");
 				clearInterval(timer);
 				restart_server();
 			}
 		}
 	} else {
 		if (pass) {
-			if (debug) console.log("Heatbeat::Started...");
+			if (debug) console.log("Heartbeat::Started...");
 			started = true;
 		} else {
-			if (debug) console.log("Heatbeat::Waiting for start...");
+			if (debug) console.log("Heartbeat::Waiting for start...");
 		}
 	}
 }
@@ -47,12 +47,12 @@ async function check_server () {
 var timer = setInterval(check_server, checkfreq);
 
 function restart_server () {
-	console.log('Heatbeat::Restarting...')
+	console.log('Heartbeat::Restarting...')
 
 	var WebSocket = require('ws');
 	var ws = new WebSocket('ws://' + serverHostname + ':' + rconPort + '/' + rconPassword);
 	ws.on('open', function open() { 
-		if (debug) console.log('Heatbeat::Sending rcon quit...')
+		if (debug) console.log('Heartbeat::Sending rcon quit...')
 		rcon_send('global.kickall Restarting', ws);
 		rcon_send('quit', ws);
 	})
