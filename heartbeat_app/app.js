@@ -72,6 +72,6 @@ function rcon_send (command, ws) {
 }
 
 function kill_rust (signal) {
-	console.log(`Heartbeat::Terminating Process... signal: ${signal}`)
+	console.log(`Heatbeat::Terminating Process... signal: ${signal}`)
 	childProcess.execSync(`kill -s ${signal} $(pidof ${processname})`);
 }
