@@ -191,6 +191,12 @@ if [ "$RUST_UPDATE_CHECKING" = "1" ]; then
 	node /app/scheduler_app/app.js &
 fi
 
+# Start the heartbeat(only if enabled)
+if [ "$RUST_HEARTBEAT" = "1" ]; then
+	echo "Starting heartbeat.."
+	node /app/heartbeat_app/app.js &
+fi
+
 # Set the working directory
 cd /steamcmd/rust
 
@@ -212,8 +218,13 @@ add_argument_pair ARGUMENTS "+server.port" "RUST_SERVER_PORT"
 add_argument_pair ARGUMENTS "+server.queryport" "RUST_SERVER_QUERYPORT"
 add_argument_pair ARGUMENTS "+server.identity" "RUST_SERVER_IDENTITY"
 
-add_argument_pair ARGUMENTS "+server.worldsize" "RUST_SERVER_WORLDSIZE"
-add_argument_pair ARGUMENTS "+server.seed" "RUST_SERVER_SEED"
+if [ -z "${RUST_LEVELURL}" ]; then
+	add_argument_pair ARGUMENTS "+server.worldsize" "RUST_SERVER_WORLDSIZE"
+	add_argument_pair ARGUMENTS "+server.seed" "RUST_SERVER_SEED"
+else
+	add_argument_pair ARGUMENTS "+server.levelurl" "RUST_LEVELURL"
+fi
+
 
 add_argument_pair ARGUMENTS "+server.hostname" "RUST_SERVER_NAME"
 add_argument_pair ARGUMENTS "+server.url" "RUST_SERVER_URL"
