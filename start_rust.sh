@@ -225,7 +225,6 @@ else
 	add_argument_pair ARGUMENTS "+server.levelurl" "RUST_LEVELURL"
 fi
 
-
 add_argument_pair ARGUMENTS "+server.hostname" "RUST_SERVER_NAME"
 add_argument_pair ARGUMENTS "+server.url" "RUST_SERVER_URL"
 add_argument_pair ARGUMENTS "+server.headerimage" "RUST_SERVER_BANNER_URL"
