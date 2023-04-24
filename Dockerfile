@@ -47,6 +47,11 @@ ADD scheduler_app/ /app/scheduler_app/
 WORKDIR /app/scheduler_app
 RUN npm install
 
+# Setup scheduling support
+ADD heartbeat_app/ /app/heartbeat_app/
+WORKDIR /app/heartbeat_app
+RUN npm install
+
 # Setup rcon command relay app
 ADD rcon_app/ /app/rcon_app/
 WORKDIR /app/rcon_app
@@ -100,6 +105,7 @@ ENV RUST_RCON_PORT "28016"
 ENV RUST_RCON_PASSWORD "docker"
 ENV RUST_APP_PORT "28082"
 ENV RUST_UPDATE_CHECKING "0"
+ENV RUST_HEARTBEAT "0"
 ENV RUST_UPDATE_BRANCH "public"
 ENV RUST_START_MODE "0"
 ENV RUST_OXIDE_ENABLED "0"
