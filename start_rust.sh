@@ -117,6 +117,41 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	fi
 fi
 
+if [ "$RUST_CARBON_ENABLED" = "1" ]; then
+	CARBON_BASE_URL="https://github.com/CarbonCommunity/Carbon.Core/releases/download/"
+	INSTALL_CARBON="0"
+	if [ ! -f "/steamcmd/rust/carbon/managed/Carbon.dll" ]; then
+		INSTALL_CARBON="1"
+	fi
+
+	if [ ! -f "/steamcmd/rust/carbon/tools/environment.sh" ]; then
+		INSTALL_CARBON="1"
+	fi
+
+	if [ "$INSTALL_CARBON" = "1" ]; then
+		echo "Downloading and installing latest Carbon.."
+		case $RUST_BRANCH in
+			"public")
+				CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
+				;;
+			"staging")
+				CARBON_URL="${CARBON_BASE_URL}rustbeta_staging_build/Carbon.Linux.Debug.tar.gz"
+				;;
+			"aux01")
+				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz"
+				;;
+			"aux02")
+				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz"
+				;;
+			*)
+				CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
+				;;
+		esac
+		curl -sL $CARBON_URL | bsdtar -xvf- -C /steamcmd/rust/
+		chmod 755 /steamcmd/rust/carbon/tools/environment.sh
+	fi
+fi
+
 # Start mode 1 means we only want to update
 if [ "$RUST_START_MODE" = "1" ]; then
 	echo "Exiting, start mode is 1.."
@@ -228,6 +263,10 @@ add_argument_pair ARGUMENTS "+server.description" "RUST_SERVER_DESCRIPTION"
 add_argument_pair ARGUMENTS "+server.maxplayers" "RUST_SERVER_MAXPLAYERS"
 add_argument_pair ARGUMENTS "+server.saveinterval" "RUST_SERVER_SAVE_INTERVAL"
 add_argument_pair ARGUMENTS "+app.port" "RUST_APP_PORT"
+
+if [ "$RUST_CARBON_ENABLED" = "1" ]; then
+	source "/steamcmd/rust/carbon/tools/environment.sh"
+fi
 
 if [ "$LOGROTATE_ENABLED" = "1" ]; then
 	unbuffer /steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND "${ARGUMENTS[@]}" 2>&1 | grep --line-buffered -Ev '^\s*$|Filename' | tee $RUST_SERVER_LOG_FILE &
