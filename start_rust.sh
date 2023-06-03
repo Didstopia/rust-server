@@ -128,6 +128,10 @@ if [ "$RUST_CARBON_ENABLED" = "1" ]; then
 		INSTALL_CARBON="1"
 	fi
 
+	if [ "$RUST_CARBON_UPDATE_ON_BOOT" = "1" ]; then
+		INSTALL_CARBON="1"
+	fi
+
 	if [ "$INSTALL_CARBON" = "1" ]; then
 		echo "Downloading and installing latest Carbon.."
 		case $RUST_BRANCH in
