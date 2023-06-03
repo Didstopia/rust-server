@@ -97,6 +97,12 @@ else
 	fi
 fi
 
+# Ensure only Oxide or Carbon is selected, not both.
+if [ "$RUST_OXIDE_ENABLED" = "1" ] && [ "$RUST_CARBON_ENABLED" = "1" ]; then
+	echo "You need to select either Carbon or Oxide for your Plugins, can't enable both."
+	exit 1
+fi
+
 # Check if Oxide is enabled
 if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# Next check if Oxide doesn't' exist, or if we want to always update it
@@ -121,10 +127,6 @@ if [ "$RUST_CARBON_ENABLED" = "1" ]; then
 	CARBON_BASE_URL="https://github.com/CarbonCommunity/Carbon.Core/releases/download/"
 	INSTALL_CARBON="0"
 	if [ ! -f "/steamcmd/rust/carbon/managed/Carbon.dll" ]; then
-		INSTALL_CARBON="1"
-	fi
-
-	if [ ! -f "/steamcmd/rust/carbon/tools/environment.sh" ]; then
 		INSTALL_CARBON="1"
 	fi
 
