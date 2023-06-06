@@ -136,23 +136,41 @@ if [ "$RUST_CARBON_ENABLED" = "1" ]; then
 
 	if [ "$INSTALL_CARBON" = "1" ]; then
 		echo "Downloading and installing latest Carbon.."
-		case $RUST_BRANCH in
-			"public")
-				CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
-				;;
-			"staging")
-				CARBON_URL="${CARBON_BASE_URL}rustbeta_staging_build/Carbon.Linux.Debug.tar.gz"
-				;;
-			"aux01")
-				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz"
-				;;
-			"aux02")
-				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz"
-				;;
-			*)
-				CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
-				;;
-		esac
+		if [ -z ${RUST_CARBON_BUILDx} ]; then
+			case $RUST_BRANCH in
+				"preview")
+					echo "Downloading preview release.."
+					CARBON_URL="${CARBON_BASE_URL}preview_build/Carbon.Linux.Debug.tar.gz"
+					;;
+				"edge")
+					echo "Downlaoding edge release.."
+					CARBON_URL="${CARBON_BASE_URL}edge_build/Carbon.Linux.Debug.tar.gz"
+					;;
+			esac
+		else
+			case $RUST_BRANCH in
+				"public")
+					echo "Downloading Rust Production Release.."
+					CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
+					;;
+				"staging")
+					echo "Downloading Rust Staging Release.."
+					CARBON_URL="${CARBON_BASE_URL}rustbeta_staging_build/Carbon.Linux.Debug.tar.gz"
+					;;
+				"aux01")
+					echo "Downloading Rust AUX01 Release.."
+					CARBON_URL="${CARBON_BASE_URL}rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz"
+					;;
+				"aux02")
+					echo "Downloading Rust AUX02 Release.."
+					CARBON_URL="${CARBON_BASE_URL}rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz"
+					;;
+				*)
+					echo "Downloading Rust Production Release.."
+					CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
+					;;
+			esac
+		fi
 		curl -sL $CARBON_URL | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/carbon/tools/environment.sh
 	fi
