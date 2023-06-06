@@ -136,8 +136,8 @@ if [ "$RUST_CARBON_ENABLED" = "1" ]; then
 
 	if [ "$INSTALL_CARBON" = "1" ]; then
 		echo "Downloading and installing latest Carbon.."
-		if [ -z ${RUST_CARBON_BUILDx} ]; then
-			case $RUST_BRANCH in
+		if [ ! -z ${RUST_CARBON_BUILD+x} ]; then
+			case $RUST_CARBON_BUILD in
 				"preview")
 					echo "Downloading preview release.."
 					CARBON_URL="${CARBON_BASE_URL}preview_build/Carbon.Linux.Debug.tar.gz"
