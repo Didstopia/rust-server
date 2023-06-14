@@ -151,8 +151,8 @@ if [ "$RUST_CARBON_ENABLED" = "1" ]; then
 				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz"
 				;;
 			*)
-				if [ ! -z ${RUST_CARBON_BUILD+x} ]; then
-					case $RUST_CARBON_BUILD in
+				if [ ! -z ${RUST_CARBON_BRANCH+x} ]; then
+					case $RUST_CARBON_BRANCH in
 						"preview")
 							echo "Downloading preview release.."
 							CARBON_URL="${CARBON_BASE_URL}preview_build/Carbon.Linux.Debug.tar.gz"
