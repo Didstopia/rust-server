@@ -97,6 +97,12 @@ else
 	fi
 fi
 
+# Ensure only Oxide or Carbon is selected, not both.
+if [ "$RUST_OXIDE_ENABLED" = "1" ] && [ "$RUST_CARBON_ENABLED" = "1" ]; then
+	echo "You need to select either Carbon or Oxide for your Plugins, can't enable both."
+	exit 1
+fi
+
 # Check if Oxide is enabled
 if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 	# Next check if Oxide doesn't' exist, or if we want to always update it
@@ -114,6 +120,60 @@ if [ "$RUST_OXIDE_ENABLED" = "1" ]; then
 		OXIDE_URL="https://umod.org/games/rust/download/develop"
 		curl -sL $OXIDE_URL | bsdtar -xvf- -C /steamcmd/rust/
 		chmod 755 /steamcmd/rust/CSharpCompiler.x86_x64 > /dev/null 2>&1 &
+	fi
+fi
+
+if [ "$RUST_CARBON_ENABLED" = "1" ]; then
+	CARBON_BASE_URL="https://github.com/CarbonCommunity/Carbon.Core/releases/download/"
+	INSTALL_CARBON="0"
+	if [ ! -f "/steamcmd/rust/carbon/managed/Carbon.dll" ]; then
+		INSTALL_CARBON="1"
+	fi
+
+	if [ "$RUST_CARBON_UPDATE_ON_BOOT" = "1" ]; then
+		INSTALL_CARBON="1"
+	fi
+
+	if [ "$INSTALL_CARBON" = "1" ]; then
+		echo "Downloading and installing latest Carbon.."
+
+		case $RUST_BRANCH in
+			"staging")
+				echo "Downloading Rust Staging Release.."
+				CARBON_URL="${CARBON_BASE_URL}rustbeta_staging_build/Carbon.Linux.Debug.tar.gz"
+				;;
+			"aux01")
+				echo "Downloading Rust AUX01 Release.."
+				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux01_build/Carbon.Linux.Debug.tar.gz"
+				;;
+			"aux02")
+				echo "Downloading Rust AUX02 Release.."
+				CARBON_URL="${CARBON_BASE_URL}rustbeta_aux02_build/Carbon.Linux.Debug.tar.gz"
+				;;
+			*)
+				if [ ! -z ${RUST_CARBON_BRANCH+x} ]; then
+					case $RUST_CARBON_BRANCH in
+						"preview")
+							echo "Downloading preview release.."
+							CARBON_URL="${CARBON_BASE_URL}preview_build/Carbon.Linux.Debug.tar.gz"
+							;;
+						"edge")
+							echo "Downlaoding edge release.."
+							CARBON_URL="${CARBON_BASE_URL}edge_build/Carbon.Linux.Debug.tar.gz"
+							;;
+						*)
+							echo "Downloading Rust Production Release.."
+							CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
+							;;
+					esac
+				else
+					echo "Downloading Rust Production Release.."
+					CARBON_URL="${CARBON_BASE_URL}production_build/Carbon.Linux.Release.tar.gz"
+				fi
+				;;
+		esac
+		curl -sL $CARBON_URL | bsdtar -xvf- -C /steamcmd/rust/
+		chmod 755 /steamcmd/rust/carbon/tools/environment.sh
 	fi
 fi
 
@@ -228,6 +288,10 @@ add_argument_pair ARGUMENTS "+server.description" "RUST_SERVER_DESCRIPTION"
 add_argument_pair ARGUMENTS "+server.maxplayers" "RUST_SERVER_MAXPLAYERS"
 add_argument_pair ARGUMENTS "+server.saveinterval" "RUST_SERVER_SAVE_INTERVAL"
 add_argument_pair ARGUMENTS "+app.port" "RUST_APP_PORT"
+
+if [ "$RUST_CARBON_ENABLED" = "1" ]; then
+	source "/steamcmd/rust/carbon/tools/environment.sh"
+fi
 
 if [ "$LOGROTATE_ENABLED" = "1" ]; then
 	unbuffer /steamcmd/rust/RustDedicated $RUST_STARTUP_COMMAND "${ARGUMENTS[@]}" 2>&1 | grep --line-buffered -Ev '^\s*$|Filename' | tee $RUST_SERVER_LOG_FILE &
