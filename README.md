@@ -46,9 +46,20 @@ RUST_UPDATE_BRANCH (DEFAULT: "public" - Set to match the branch that you want to
 RUST_START_MODE (DEFAULT: "0" - Determines if the server should update and then start (0), only update (1) or only start (2))
 RUST_OXIDE_ENABLED (DEFAULT: "0" - Set to 1 to automatically install the latest version of Oxide)
 RUST_OXIDE_UPDATE_ON_BOOT (DEFAULT: "1" - Set to 0 to disable automatic update of Oxide on boot)
+RUST_CARBON_ENABLED (DEFAULT: "0" - Set to 1 to automatically install the latest version of Carbon)
+RUST_CARBON_UPDATE_ON_BOOT (DEFAULT: "0" - Set to 1 to automatically update Carbon on boot)
+RUST_CARBON_BRANCH (DEFAULT: "" - Set's the Branch of Carbon to install, Values: preview, edge, stable)
 RUST_RCON_SECURE_WEBSOCKET (DEFAULT: "0" - Set to 1 to enable secure websocket connections to the RCON web interface)
 RUST_HEARTBEAT (DEFAULT: "0" - Set to 1 to enable the heartbeat service which will forcibly quit the server if it becomes unresponsive to queries)
 ```
+
+# Oxide vs Carbon
+
+There are currently 3 systems for Modding Rust.  Oxide, is the oldest, and most stable release of the Modding System, and most plugins are written for Oxide.  However, Oxide is not updated as rapidly, or frequently, and can sometimes have a lag before a release matches with Rust server.
+
+Carbon on the other hand, is the new kid on the block, it's more newer, more frequently updated, and utilizes a Hook on Demand setup, where only the hooks that plugins subscribe to / override in their code, will actually be connected, instead of all of them.  Most plugins written for Oxide will work with Carbon, but it is not currently 100 percent backwards compatible.  And Extensions (Pre-compiled Assemblies) that specifically target Oxide, need to be re-compiled to work with Carbon, and may have issues if certain API functionality that is available in Oxide, is not available in Carbon.
+
+It is recommended that you only choose 1 of these systems for your server, and the docker will fail to run, if you enable both.
 
 # Logging and rotating logs
 
