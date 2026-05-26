@@ -1,4 +1,4 @@
-FROM didstopia/base:nodejs-12-steamcmd-ubuntu-18.04
+FROM --platform=amd64 didstopia/base:nodejs-22-steamcmd-ubuntu-24.04
 
 LABEL maintainer="Didstopia <support@didstopia.com>"
 

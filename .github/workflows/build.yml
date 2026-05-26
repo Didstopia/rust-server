@@ -1,0 +1,30 @@
+name: Build
+
+# Rebuilds and pushes the image when the base image changes, replacing the
+# deprecated Docker Hub autobuild. Builds on a native amd64 runner (this image
+# is amd64 only, since it is based on a SteamCMD base). See:
+# https://github.com/Didstopia/docker-base-images/blob/master/docs/downstream.md
+
+on:
+  push:
+    branches: [master]
+  schedule:
+    - cron: "0 6 * * *"   # daily base-change check
+  workflow_dispatch:
+  repository_dispatch:
+    types: [base-image-updated]
+
+jobs:
+  image:
+    uses: Didstopia/docker-base-images/.github/workflows/downstream.yml@master
+    with:
+      image: didstopia/rust-server
+      base-image: didstopia/base:nodejs-22-steamcmd-ubuntu-24.04
+      tags: latest
+      platforms: linux/amd64
+      # push and manual runs always build; the scheduled run only builds when
+      # the base image actually changed
+      force: ${{ github.event_name != 'schedule' }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DIDSTOPIA_DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DIDSTOPIA_DOCKERHUB_TOKEN }}
